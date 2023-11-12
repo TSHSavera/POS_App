@@ -21,7 +21,16 @@ public class Main {
 
         //Call auth
         if (authHandler.login(inputUsername, inputPassword) != null) {
+
             System.out.println("Login successful!");
+
+            //Initialize views
+            if (auth.accountType.equals("A")) {
+                new views("admin-home", auth.username);
+            } else if (auth.accountType.equals("C")) {
+                new views("cashier-home", auth.username);
+            }
+
         } else {
             System.out.println("Invalid Credentials!");
         }
