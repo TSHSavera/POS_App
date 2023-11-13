@@ -32,8 +32,9 @@ public class Main {
 
             } else {
                 System.out.println("Invalid Credentials!");
+
             }
-        } while (authHandler.sessionID == null);
+        } while (authHandler.loginAttemptsCheck() > 3);
 
 
 

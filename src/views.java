@@ -1,3 +1,8 @@
+/*
+    Views Class
+
+ */
+
 public class views {
 
     private String window;
@@ -25,4 +30,6 @@ public class views {
             System.out.println("Welcome Cashier " + username);
         }
     }
+
+
 }

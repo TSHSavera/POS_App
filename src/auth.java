@@ -109,4 +109,9 @@ public class auth {
         return false;
     }
 
+    //Login Attempts
+    //Goal - To prevent accessing the login attempts directly. Set to read-only.
+    int loginAttemptsCheck() {
+        return loginAttempts;
+    }
 }
