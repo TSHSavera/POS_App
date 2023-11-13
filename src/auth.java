@@ -31,6 +31,7 @@ public class auth {
     String firstName;
     String lastName;
     static String accountType;
+    private int loginAttempts = 0;
 
     //Initialize the set of default credentials
     private final String[] usernames = {"pogi", "ganda"};
@@ -53,14 +54,18 @@ public class auth {
     String login(String un, String pass) {
         //Perform checks
         if (checkCredentials(un, pass)) {
-            //Set a random generated sid
-            byte[] array = new byte[16]; // length is bounded by 7
+            //Generate session ID
+            byte[] array = new byte[7]; // length is bounded by 7
             new Random().nextBytes(array);
             sessionID = new String(array, StandardCharsets.UTF_8);
-            //Return
+            //Return session ID
             return sessionID;
+        } else {
+            //Increment login attempts
+            loginAttempts++;
+            //Return null
+            return null;
         }
-        return null;
     }
 
 

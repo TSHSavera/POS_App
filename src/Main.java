@@ -13,27 +13,29 @@ public class Main {
 
 
         //Perform Login
-        System.out.println("Welcome to POS! Please enter your account credentials.");
-        System.out.print("Username: ");
-        inputUsername = userInp.readLine();
-        System.out.print("Password: ");
-        inputPassword = userInp.readLine();
+        do {
+            System.out.println("Welcome to POS! Please enter your account credentials.");
+            System.out.print("Username: ");
+            inputUsername = userInp.readLine();
+            System.out.print("Password: ");
+            inputPassword = userInp.readLine();
 
-        //Call auth
-        if (authHandler.login(inputUsername, inputPassword) != null) {
+            //Call auth
+            if (authHandler.login(inputUsername, inputPassword) != null) {
+                System.out.println("Login successful!");
+                //Initialize views
+                if (auth.accountType.equals("A")) {
+                    new views("admin-home", auth.username);
+                } else if (auth.accountType.equals("C")) {
+                    new views("cashier-home", auth.username);
+                }
 
-            System.out.println("Login successful!");
-
-            //Initialize views
-            if (auth.accountType.equals("A")) {
-                new views("admin-home", auth.username);
-            } else if (auth.accountType.equals("C")) {
-                new views("cashier-home", auth.username);
+            } else {
+                System.out.println("Invalid Credentials!");
             }
+        } while (authHandler.sessionID == null);
 
-        } else {
-            System.out.println("Invalid Credentials!");
-        }
+
 
     }
 }
