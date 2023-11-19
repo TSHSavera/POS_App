@@ -1,0 +1,31 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class PeriodReport {
+
+public static void (string [] args){
+// Specify
+String startDateString= "2023-08-02";
+String endDateString= "2023-09-02";
+
+//Parse
+LocalDate startDate= LocalDate.parse(startDateString);
+LocalDate endDate= LocalDate.parse(endDateString);
+
+//Generate
+generatePeriodReport(startDate, endDate);
+}
+
+private static void generatePeriodReport(LocalDate startDate, LocalDate endDate) {
+//Display
+System.out.printIn("Period Report from " + startDate + " to " + endDate + "\n");
+
+
+// Perform your reporting logic here
+// For demonstration purposes, let's just print the dates in the period
+while (!startDate.isAfter(endDate)) {
+System.out.println(startDate);
+startDate = startDate.plusDays(1);
+}
+}
+}

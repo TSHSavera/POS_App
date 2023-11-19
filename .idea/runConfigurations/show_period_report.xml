@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="show period report" type="AntRunConfiguration" editBeforeRun="true" focusToolWindowBeforeRun="true" singleton="false">
+    <method v="2">
+      <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_ShowPeriodReport" />
+      <option name="MakeProject" enabled="true" />
+      <option name="Make" enabled="true" />
+      <option name="MakeProject" enabled="true" />
+    </method>
+  </configuration>
+</component>
