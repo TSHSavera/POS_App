@@ -1,9 +1,8 @@
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class PeriodReport {
 
-public static void (string [] args){
+public static void main (String [] args){
 // Specify
 String startDateString= "2023-08-02";
 String endDateString= "2023-09-02";
@@ -18,7 +17,7 @@ generatePeriodReport(startDate, endDate);
 
 private static void generatePeriodReport(LocalDate startDate, LocalDate endDate) {
 //Display
-System.out.printIn("Period Report from " + startDate + " to " + endDate + "\n");
+System.out.println("Period Report from " + startDate + " to " + endDate + "\n");
 
 
 // Perform your reporting logic here
