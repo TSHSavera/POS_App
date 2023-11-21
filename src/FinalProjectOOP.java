@@ -1,7 +1,7 @@
-package FinalProject;
+//package FinalProject;
 
 import java.util.*;
-import java.io.*;
+//import java.io.*;
 
 class User {
     
@@ -45,9 +45,9 @@ class Cashier extends User {
 }
 
 public class FinalProjectOOP{
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
-            // Create admin account
+            // Create an admin account
             System.out.println("Creating admin account ");
             System.out.println("-------------------------------------------");
             System.out.print("Enter admin username: ");
@@ -56,7 +56,7 @@ public class FinalProjectOOP{
             String adminPassword = scanner.nextLine();
             Admin admin = new Admin(adminUsername, adminPassword);
             
-            // Create cashier account
+            // Create a cashier account
             System.out.println("\nCreating cashier account ");
             System.out.println("-------------------------------------------");
             System.out.print("Enter cashier username: ");
@@ -72,7 +72,7 @@ public class FinalProjectOOP{
             String enteredUsername = scanner.nextLine();
             System.out.print("Enter password: ");
             String enteredPassword = scanner.nextLine();
-            System.out.println("");
+            System.out.println();
             
             // Check admin credentials
             if (admin.isValidCredentials(enteredUsername, enteredPassword)) {
