@@ -9,7 +9,7 @@ public class Main {
 
         //Create Inputs, Initialize Classes
         BufferedReader userInp = new BufferedReader(new InputStreamReader(System.in));
-        auth authHandler = new auth();
+        authOperations authHandler = new authOperations();
 
 
         //Perform Login
@@ -22,21 +22,25 @@ public class Main {
 
             //Call auth
             if (authHandler.login(inputUsername, inputPassword) != null) {
-                System.out.println("Login successful!");
-                //Initialize views
-                if (auth.accountType.equals("A")) {
-                    new views("admin-home", auth.username);
-                } else if (auth.accountType.equals("C")) {
-                    new views("cashier-home", auth.username);
+                break;
+            } else {
+                if (authHandler.loginAttemptsCheck() < 3) {
+                    System.out.println("Invalid Credentials!");
+                } else {
+                    System.out.println("Too many login attempts! Program exits.");
+                    System.exit(0);
                 }
 
-            } else {
-                System.out.println("Invalid Credentials!");
-
             }
-        } while (authHandler.loginAttemptsCheck() > 3);
+        } while (authHandler.loginAttemptsCheck() < 3);
 
-
-
+        //Perform Ops
+        System.out.println("Login successful!");
+        //Initialize views
+        if (authHandler.retrieve("accountType").equals("A")) {
+            new views("admin-home", authHandler.retrieve("username"));
+        } else if (authHandler.retrieve("accountType").equals("C")) {
+            new views("cashier-home", authHandler.retrieve("username"));
+        }
     }
 }
