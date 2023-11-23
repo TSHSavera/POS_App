@@ -1,4 +1,3 @@
-import java.util.*;
 public class Methods {
     String[] Array;
     int arraySize;
@@ -13,8 +12,8 @@ public class Methods {
         if (arraySize==arrayCount) {
             growSize();
         }
-    Array[arrayCount] = value;
-    arrayCount++;
+        Array[arrayCount] = value;
+        arrayCount++;
     }
     public void growSize() {
         String[] temp;
