@@ -7,17 +7,21 @@
 
     Auth Guide
         To access certain class methods available outside the class, one must call the following
-        auth.sessionID - This is the session ID of the user. This is used to check if the user is logged in.
-        auth.username - This is the username of the user. This is used to get the username of the logged-in user.
-        auth.accountType - This is the account type of the user. This is used to get the account type of the logged-in user.
-        auth.firstName - This is the first name of the user. This is used to get the first name of the logged-in user.
-        auth.lastName - This is the last name of the user. This is used to get the last name of the logged-in user.
-        auth.login(String username, String password) - This is the method used to log in to the system. This returns a session ID.
+        auth.retrieve(String sid, String key) - This is the method used to retrieve a particular value from the account. This returns a String.
+        Auth.signup(String sid, String un, String pass, String fn, String ln, String at) - This is the method used to sign up a new account. This returns a boolean. Must be logged in as an admin to use.
+        Auth.login(String username, String password) - This is the method used to log in to the system. This returns a session ID.
+        auth.loginAttemptsCheck() - This is the method used to check the number of login attempts. This returns an integer.
 
         To access certain class methods available only inside the class, one must call the following
         auth.checkCredentials(String username, String password) - This is the method used to check if the credentials are valid. This returns a boolean.
+        auth.addNewAccount(String username, String password, String firstName, String lastName, String accountType) - This is the method used to add a new account. This returns a boolean.
+        auth.deleteAccount(String username) - This is the method used to delete an account. This returns a boolean.
+        auth.accountLookup(String username) - This is the method used to look up an account. This returns a Map<String, String> of the account.
+
 
 */
+
+//package src;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -53,7 +57,7 @@ public class auth {
         totalAccounts++;
     }
 
-    public void addNewAccount(String username, String password, String firstName, String lastName, String accountType) {
+    public boolean addNewAccount(String username, String password, String firstName, String lastName, String accountType) {
         //Re-initialize the account storage
         account = new HashMap<>();
 
@@ -61,35 +65,35 @@ public class auth {
         //Safety check 1: Null values are not allowed
         if (username == null || password == null || firstName == null || lastName == null || accountType == null) {
             System.out.println("Error: Null values are not allowed!");
-            return;
+            return false;
         }
         //Safety check 2: Username must be unique
         for (int i = 0; i < totalAccounts; i++) {
             if (listOfAccounts.get(i).get("username").equals(username)) {
                 System.out.println("Error: Username already exists!");
-                return;
+                return false;
             }
         }
         //Safety check 3: Password must be at least 8 characters long
         if (password.length() < 8) {
             System.out.println("Error: Password must be at least 8 characters long!");
-            return;
+            return false;
         } else {
             //must contain at least 1 number and 1 special character
             if (!password.matches(".*\\d.*") || !password.matches(".*[!@#$%^&*].*")) {
                 System.out.println("Error: Password must contain at least 1 number and 1 special character!");
-                return;
+                return false;
             }
         }
         //Safety check 4: An account type must be either A or C
         if (!(accountType.equals("A") || accountType.equals("C"))) {
             System.out.println("Error: Account type must be either A or C!");
-            return;
+            return false;
         }
         //Safety check 5: First name and last name must not be empty
         if (firstName.isEmpty() || lastName.isEmpty()) {
             System.out.println("Error: First name and last name must not be empty!");
-            return;
+            return false;
         }
 
         //Add the new account to the list
@@ -101,14 +105,15 @@ public class auth {
         listOfAccounts.add(account);
         totalAccounts++;
         System.out.println("Account added!");
+        return true;
     }
 
-    public void deleteAccount(String username) {
+    public boolean deleteAccount(String username) {
         //Perform safety checks
         //Safety check 1: Null values are not allowed
         if (username == null) {
             System.out.println("Error: Null values are not allowed!");
-            return;
+            return false;
         }
         //Start lookup
         for (int i = 0; i < totalAccounts; i++) {
@@ -116,11 +121,12 @@ public class auth {
             if (listOfAccounts.get(i).get("username").equals(username)) {
                 listOfAccounts.remove(i);
                 System.out.println("Account deleted!");
-                return;
+                return true;
             }
         }
         //If not found, return an error
         System.out.println("Error: Username not found!");
+        return false;
     }
 
     public Map<String, String> accountLookup(String username) {
@@ -148,33 +154,77 @@ public class auth {
 class authOperations extends auth {
     //Handlers
     private int loginAttempts = 0;
-    String sessionID = null;
-    Map<String, String> account = new HashMap<>();
+    private static String sessionID;
+    //Store the logged-in user's account
+    static Map<String, String> account = new HashMap<>();
 
     //Call current logged-in user
-    String retrieve(String key) {
-        return account.get(key);
+    String retrieve(String sid, String key) {
+        if (sid.equals(sessionID)) {
+            return account.get(key);
+        }
+        return null;
     }
-    //Auth Login
-    String login(String un, String pass) {
-        //Perform checks
-        if (checkCredentials(un, pass)) {
-            //Generate session ID
-            byte[] array = new byte[7]; // length is bounded by 7
-            new Random().nextBytes(array);
-            //Set SessionID
-            sessionID = new String(array, StandardCharsets.UTF_8);
-            //Return session ID
-            return sessionID;
+    Map<String, String> retrieve(String sid) {
+        if (sid.equals(sessionID)) {
+            return account;
+        }
+        System.out.println("Error: Session ID doesn't match!");
+        //TODO: Logout the user
+        logout();
+        return null;
+    }
+
+    //Auth retrieve all accounts for admin
+    List<Map<String, String>> retrieveAllAccounts(String sid) {
+        //Perform checks - if the user is logged in and is an admin
+        if (retrieve(sid, "accountType").equals("A")) {
+            return listOfAccounts;
         } else {
-            //Increment login attempts
-            loginAttempts++;
-            //Return null
+            System.out.println("Error: You are not authorized to perform this action!");
             return null;
         }
     }
 
+    //Auth Login
+    String login(String un, String pass) {
+        //Perform checks
+        if (loginAttempts < 3) {
+            //Check if the credentials are correct
+            if (checkCredentials(un, pass)) {
+                //Generate a session ID
+                sessionID = UUID.randomUUID().toString();
+                //Return the session ID
+                return sessionID;
+            } else {
+                //Increment login attempts
+                loginAttempts++;
+                //Return null
+                return null;
+            }
+        } else {
+            //Prohibit login attempts
+            System.out.println("Error: Too many login attempts!");
+            return null;
+        }
+    }
 
+    //Auth Signup
+    boolean signup(String sid, String un, String pass, String fn, String ln, String at) {
+        //Perform checks - if the user is logged in and is an admin
+        if (retrieve(sid, "accountType").equals("A")) {
+            if (addNewAccount(un, pass, fn, ln, at)) {
+                System.out.println("Account created!");
+                return true;
+            } else {
+                System.out.println("Error: Account not created!");
+                return false;
+            }
+        } else {
+            System.out.println("Error: You are not authorized to perform this action!");
+            return false;
+        }
+    }
 
     //Auth Check Credentials
     private boolean checkCredentials(String inputUsername, String inputPassword) {
@@ -192,5 +242,18 @@ class authOperations extends auth {
         return loginAttempts;
     }
 
+    //Session check
+    boolean sessionCheck(String sid) {
+        //Check if null
+        if (sid == null) {
+            return false;
+        }
+        return sid.equals(sessionID);
+    }
+
+    //Logout
+    void logout() {
+        sessionID = null;
+    }
 
 }
