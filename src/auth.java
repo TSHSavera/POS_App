@@ -7,16 +7,22 @@
 
     Auth Guide
         To access certain class methods available outside the class, one must call the following
-        auth.retrieve(String sid, String key) - This is the method used to retrieve a particular value from the account. This returns a String.
+        auth.retrieveCurrentUser(String sid, String key) - This is the method used to retrieveCurrentUser a particular value from the account. This returns a String.
         Auth.signup(String sid, String un, String pass, String fn, String ln, String at) - This is the method used to sign up a new account. This returns a boolean. Must be logged in as an admin to use.
         Auth.login(String username, String password) - This is the method used to log in to the system. This returns a session ID.
         auth.loginAttemptsCheck() - This is the method used to check the number of login attempts. This returns an integer.
+        auth.sessionCheck(String sid) - This is the method used to check if the session ID is valid. This returns a boolean.
+        auth.logout() - This is the method used to log out of the system. This returns nothing.
+        auth.changeCredentials(String sid, String un, String key, String value) - This is the method used to change the credentials of an account. This returns nothing. Must be logged in as an admin to use.
+        
 
         To access certain class methods available only inside the class, one must call the following
         auth.checkCredentials(String username, String password) - This is the method used to check if the credentials are valid. This returns a boolean.
         auth.addNewAccount(String username, String password, String firstName, String lastName, String accountType) - This is the method used to add a new account. This returns a boolean.
         auth.deleteAccount(String username) - This is the method used to delete an account. This returns a boolean.
         auth.accountLookup(String username) - This is the method used to look up an account. This returns a Map<String, String> of the account.
+        auth.testValues(String type, String value) - This is the method used to test if the values are valid. This returns a boolean.
+
 
 
 */
@@ -30,7 +36,7 @@ public class auth {
     static Map<String, String> account = new HashMap<>();
 
     //Create a list of accounts
-    static List<Map<String, String>> listOfAccounts = new ArrayList<>();
+    protected static List<Map<String, String>> listOfAccounts = new ArrayList<>();
 
     //Total number of accounts
     static int totalAccounts = 0;
@@ -124,21 +130,27 @@ public class auth {
         return 0;
     }
 
-    public boolean deleteAccount(String username) {
+    public boolean deleteAccount(String sid, String username) {
         //Perform safety checks
         //Safety check 1: Null values are not allowed
         if (username == null) {
             System.out.println("Error: Null values are not allowed!");
             return false;
         }
-        //Start lookup
-        for (int i = 0; i < totalAccounts; i++) {
-            //If found, remove the account
-            if (listOfAccounts.get(i).get("username").equals(username)) {
-                listOfAccounts.remove(i);
-                System.out.println("Account deleted!");
-                return true;
+        //Safety check 2: The logged-in user must be an admin
+        if (Objects.requireNonNull(authOperations.retrieveCurrentUser(sid)).get("accountType").equalsIgnoreCase("A")) {
+            for (int i = 0; i < totalAccounts; i++) {
+                //If found, delete the account
+                if (listOfAccounts.get(i).get("username").equals(username)) {
+                    listOfAccounts.remove(i);
+                    totalAccounts--;
+                    System.out.println("Account with username of '" + username + "' was deleted successfully!");
+                    return true;
+                }
             }
+        } else {
+            System.out.println("Error: You are not authorized to perform this action!");
+            return false;
         }
         //If not found, return an error
         System.out.println("Error: Username not found!");
@@ -146,18 +158,29 @@ public class auth {
     }
 
     public Map<String, String> accountLookup(String username) {
-        //Create a new array
-        String[] tempAccount = new String[5];
         //Perform safety checks
         //Safety check 1: Null values are not allowed
         if (username == null) {
             return null;
         }
-        //Start lookup
-        for (int i = 0; i < totalAccounts; i++) {
-            //If found, save the account
-            if (listOfAccounts.get(i).get("username").equals(username)) {
-                return listOfAccounts.get(i);
+        //Start lookup if the sessionID is null - means that it is used for login not for retrieving data -
+        // we'll not allow anyone to retrieve data without logging in, especially if they're not admin
+        if (authOperations.sessionID == null) {
+            for (int i = 0; i < totalAccounts; i++) {
+                //If found, return the account
+                if (listOfAccounts.get(i).get("username").equals(username)) {
+                    return listOfAccounts.get(i);
+                }
+            }
+        } else {
+            //If the sessionID is not null - check if the user is an admin - then allow them to retrieve data
+            if (authOperations.account.get("accountType").equalsIgnoreCase("A")) {
+                for (int i = 0; i < totalAccounts; i++) {
+                    //If found, return the account
+                    if (listOfAccounts.get(i).get("username").equals(username)) {
+                        return listOfAccounts.get(i);
+                    }
+                }
             }
         }
         //If not found, return an error
@@ -168,18 +191,12 @@ public class auth {
 class authOperations extends auth {
     //Handlers
     private int loginAttempts = 0;
-    private static String sessionID;
+    protected static String sessionID;
     //Store the logged-in user's account
     static Map<String, String> account = new HashMap<>();
 
-    //Call current logged-in user
-    String retrieve(String sid, String key) {
-        if (sid.equals(sessionID)) {
-            return account.get(key);
-        }
-        return null;
-    }
-    Map<String, String> retrieve(String sid) {
+    //Call current logged-in user - get data
+    static Map<String, String> retrieveCurrentUser(String sid) {
         if (sid.equals(sessionID)) {
             return account;
         }
@@ -189,10 +206,10 @@ class authOperations extends auth {
         return null;
     }
 
-    //Auth retrieve all accounts for admin
+    //Auth retrieveCurrentUser all accounts for admin
     List<Map<String, String>> retrieveAllAccounts(String sid) {
         //Perform checks - if the user is logged in and is an admin
-        if (retrieve(sid, "accountType").equals("A")) {
+        if (retrieveCurrentUser(sid).get("accountType").equalsIgnoreCase("A")) {
             return listOfAccounts;
         } else {
             System.out.println("Error: You are not authorized to perform this action!");
@@ -226,7 +243,7 @@ class authOperations extends auth {
     //Auth Signup
     void signup(String sid, String un, String pass, String fn, String ln, String at) {
         //Perform checks - if the user is logged in and is an admin
-        if (retrieve(sid, "accountType").equals("A")) {
+        if (retrieveCurrentUser(sid).get("accountType").equalsIgnoreCase("A")) {
             //Call addNewAccount
             int addNewAccount = addNewAccount(un, pass, fn, ln, at);
             if (addNewAccount == 0) {
@@ -269,9 +286,51 @@ class authOperations extends auth {
     }
 
     //Logout
-    void logout() {
+    static void logout() {
         sessionID = null;
     }
 
+    //Auth Change Credentials
+    void changeCredentials(String sid, String un, String key, String value) {
+        //Check if the current user is an admin
+        if (Objects.requireNonNull(retrieveCurrentUser(sid)).get("accountType").equalsIgnoreCase("A")) {
+            //Check if the key is valid
+            if (key.equalsIgnoreCase("username") || key.equalsIgnoreCase("password") || key.equalsIgnoreCase("firstName") || key.equalsIgnoreCase("lastName") || key.equalsIgnoreCase("accountType")) {
+                //Check if the value is valid
+                if (!testValues(key, value)) {
+                    //Check if the key is username
+                    if (key.equalsIgnoreCase("username")) {
+                        //Check if the username exists
+                        if (accountLookup(value) == null) {
+                            //Change the username
+                            for (int i = 0; i < totalAccounts; i++) {
+                                if (listOfAccounts.get(i).get("username").equals(account.get("username"))) {
+                                    listOfAccounts.get(i).put("username", value);
+                                    System.out.println("Username changed successfully!");
+                                    break;
+                                }
+                            }
+                        } else {
+                            System.out.println("Error: Username already exists!");
+                        }
+                    } else {
+                        //Change the value
+                        for (int i = 0; i < totalAccounts; i++) {
+                            if (listOfAccounts.get(i).get("username").equals(un)) {
+                                listOfAccounts.get(i).put(key, value);
+                                System.out.println("Value changed successfully!");
+                                break;
+                            }
+                        }
+                    }
+                }
+            } else {
+                throw new IllegalArgumentException("Error: Invalid argument for 'key' was passed - " + key);
+            }
+        } else {
+            System.out.println("Error: You are not authorized to perform this action!");
+        }
+
+    }
 
 }
