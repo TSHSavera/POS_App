@@ -9,6 +9,10 @@ public class views {
 
     private String sessionID;
     BufferedReader userInp = new BufferedReader(new InputStreamReader(System.in));
+    authOperations authHandler = new authOperations();
+
+    //Initialize new account array
+    String[] newAccount = new String[5];
     views() {
         window = null;
     }
@@ -26,7 +30,6 @@ public class views {
 
     views(String sessionID) throws IOException {
         //Retrieve account data
-        authOperations authHandler = new authOperations();
         Map<String, String> accountData = authHandler.retrieve(sessionID);
         //Check the account type
         if (accountData.get("accountType").equals("A")) {
@@ -60,43 +63,28 @@ public class views {
     }
 
     public void adminOps(int option) throws IOException {
-        authOperations authHandler = new authOperations();
         switch (option) {
             case 1:
-                String[] newAccount = new String[5];
-                System.out.println("Enter new account details");
-                System.out.print("Username: ");
-                newAccount[0] = userInp.readLine();
-                System.out.print("Password: ");
-                newAccount[1] = userInp.readLine();
-                System.out.print("First Name: ");
-                newAccount[2] = userInp.readLine();
-                System.out.print("Last Name: ");
-                newAccount[3] = userInp.readLine();
-                do {
-                    System.out.print("Account Type (A/C): ");
-                    newAccount[4] = userInp.readLine();
-                } while(!newAccount[4].equalsIgnoreCase("a") && !newAccount[4].equalsIgnoreCase("c"));
-                authHandler.signup(sessionID, newAccount[0], newAccount[1], newAccount[2], newAccount[3], newAccount[4]);
-
+                //Call the viewAddNewAccount function here that accepts auth.signup() as a method of operation
+                viewAddNewAccount();
                 break;
             case 2:
                 System.out.println("View accounts");
                 //Retrieve all accounts
-                System.out.println("Total Registered Accounts: " + authHandler.totalAccounts);
+                System.out.println("Total Registered Accounts: " + auth.totalAccounts);
                 //Loop through all accounts
-                for (int i = 0; i < authHandler.totalAccounts; i++) {
+                for (int i = 0; i < auth.totalAccounts; i++) {
                     String accountType;
-                    if (authHandler.listOfAccounts.get(i).get("accountType").equalsIgnoreCase("A")) {
+                    if (auth.listOfAccounts.get(i).get("accountType").equalsIgnoreCase("A")) {
                         accountType = "Admin";
                     } else {
                         accountType = "Cashier";
                     }
                     System.out.println("Account " + (i + 1) + ":");
-                    System.out.println("Username: " + authHandler.listOfAccounts.get(i).get("username"));
-                    System.out.println("Password: " + authHandler.listOfAccounts.get(i).get("password"));
-                    System.out.println("First Name: " + authHandler.listOfAccounts.get(i).get("firstName"));
-                    System.out.println("Last Name: " + authHandler.listOfAccounts.get(i).get("lastName"));
+                    System.out.println("Username: " + auth.listOfAccounts.get(i).get("username"));
+                    System.out.println("Password: " + auth.listOfAccounts.get(i).get("password"));
+                    System.out.println("First Name: " + auth.listOfAccounts.get(i).get("firstName"));
+                    System.out.println("Last Name: " + auth.listOfAccounts.get(i).get("lastName"));
                     System.out.println("Account Type: " + accountType);
                     System.out.println();
                 }
@@ -108,13 +96,11 @@ public class views {
                 status = false;
                 break;
             default:
-                System.out.println("Invalid option");
-                break;
+                throw new IllegalArgumentException("Error: Invalid argument for 'option' was passed. - " + option);
         }
     }
 
     public void cashierOps(int option) {
-        authOperations authHandler = new authOperations();
         switch (option) {
             case 1:
                 System.out.println("Create new transaction");
@@ -133,4 +119,40 @@ public class views {
         }
     }
 
+
+    //This function is called when the admin wants to add a new account
+
+    void viewAddNewAccount() throws IOException{
+        //Ask for values then test instantly
+        //Ask for new account details
+        //Loop until the signup is successful
+        System.out.println("Enter new account details");
+        //Ask for username
+        do {
+            System.out.print("Username: ");
+            newAccount[0] = userInp.readLine();
+        } while (authHandler.testValues("username", newAccount[0]));
+        //Ask for password
+        do {
+            System.out.print("Password: ");
+            newAccount[1] = userInp.readLine();
+        } while (authHandler.testValues("password", newAccount[1]));
+        //Ask for first name and last name
+        do {
+            System.out.print("First Name: ");
+            newAccount[2] = userInp.readLine();
+        } while (authHandler.testValues("firstName", newAccount[2]));
+        do {
+            System.out.print("Last Name: ");
+            newAccount[3] = userInp.readLine();
+        } while (authHandler.testValues("lastName", newAccount[3]));
+        //Ask for the account type
+        do {
+            System.out.print("Account Type (A/C): ");
+            newAccount[4] = userInp.readLine();
+        } while (authHandler.testValues("accountType", newAccount[4]));
+
+        //Once all loops broke, perform signup
+        authHandler.signup(sessionID, newAccount[0], newAccount[1], newAccount[2], newAccount[3], newAccount[4]);
+    }
 }

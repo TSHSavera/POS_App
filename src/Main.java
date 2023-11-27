@@ -1,8 +1,8 @@
 //package src;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -10,7 +10,7 @@ public class Main {
 
         //Initialize Variable Handlers
         String inputUsername, inputPassword;
-        String sessionID = null;
+        String sessionID;
 
         //Create Inputs, Initialize Classes
         BufferedReader userInp = new BufferedReader(new InputStreamReader(System.in));

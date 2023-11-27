@@ -23,78 +23,95 @@
 
 //package src;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class auth {
     //Create a storage for each account credential
-    Map<String, String> account = new HashMap<>();
+    static Map<String, String> account = new HashMap<>();
 
     //Create a list of accounts
-    List<Map<String, String>> listOfAccounts = new ArrayList<>();
+    static List<Map<String, String>> listOfAccounts = new ArrayList<>();
 
     //Total number of accounts
-    int totalAccounts = 0;
+    static int totalAccounts = 0;
 
     //Instantiate the class
     public auth() {
-        //Initialize the admin accounts
-        account.put("username", "admin");
-        account.put("password", "admin");
-        account.put("firstName", "Sandren Troy");
-        account.put("lastName", "Milante");
-        account.put("accountType", "A");
-        listOfAccounts.add(account);
-        totalAccounts++;
+        //If the admin is not yet initialized, initialize it
+        if (listOfAccounts.isEmpty()) {
+            //Initialize the admin accounts
+            account.put("username", "admin");
+            account.put("password", "admin");
+            account.put("firstName", "Sandren Troy");
+            account.put("lastName", "Milante");
+            account.put("accountType", "A");
+            listOfAccounts.add(account);
+            totalAccounts++;
 
-        account = new HashMap<>();
-        account.put("username", "cashier");
-        account.put("password", "cashier");
-        account.put("firstName", "Juan");
-        account.put("lastName", "Dela Cruz");
-        account.put("accountType", "C");
-        listOfAccounts.add(account);
-        totalAccounts++;
+            account = new HashMap<>();
+            account.put("username", "cashier");
+            account.put("password", "cashier");
+            account.put("firstName", "Juan");
+            account.put("lastName", "Dela Cruz");
+            account.put("accountType", "C");
+            listOfAccounts.add(account);
+            totalAccounts++;
+        }
     }
 
-    public boolean addNewAccount(String username, String password, String firstName, String lastName, String accountType) {
+    //Auth Tests - Make sure that the data is correct
+    public boolean testValues(String type, String value) {
+        if (value == null) {
+            System.out.println("Error: Null values are not allowed!");
+            return true;
+        }
+        switch (type) {
+            case "username":
+                //Check if the username doesn't exist - if not return true
+                if (accountLookup(value) == null) {
+                    return false;
+                } else {
+                    System.out.println("Error: Username already exists!");
+                }
+                break;
+            case "password":
+                //Check if the password is longer than 8 characters
+                if (value.length() >= 8) {
+                    //Check if the password contains at least 1 number and 1 special character
+                    if (value.matches(".*\\d.*") && value.matches(".*[!@#$%^&*].*")) {
+                        return false;
+                    } else {
+                        System.out.println("Error: Password must contain at least 1 number and 1 special character!");
+                    }
+                } else {
+                    System.out.println("Error: Password must be at least 8 characters long!");
+                }
+                break;
+            case "firstName", "lastName":
+                //Check if the first name is not empty
+                if (!value.isEmpty()) {
+                    return false;
+                } else {
+                    System.out.println("Error: Names cannot be empty!");
+                }
+                break;
+            case "accountType":
+                //Check if the account type is either A or C
+                if (value.equalsIgnoreCase("A") || value.equalsIgnoreCase("C")) {
+                    return false;
+                } else {
+                    System.out.println("Error: Invalid account type! Must be either A or C.");
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Error: Invalid argument for 'type' was passed - " + type);
+        }
+        return true;
+    }
+
+    public int addNewAccount(String username, String password, String firstName, String lastName, String accountType) {
         //Re-initialize the account storage
         account = new HashMap<>();
-
-        //Perform safety checks
-        //Safety check 1: Null values are not allowed
-        if (username == null || password == null || firstName == null || lastName == null || accountType == null) {
-            System.out.println("Error: Null values are not allowed!");
-            return false;
-        }
-        //Safety check 2: Username must be unique
-        for (int i = 0; i < totalAccounts; i++) {
-            if (listOfAccounts.get(i).get("username").equals(username)) {
-                System.out.println("Error: Username already exists!");
-                return false;
-            }
-        }
-        //Safety check 3: Password must be at least 8 characters long
-        if (password.length() < 8) {
-            System.out.println("Error: Password must be at least 8 characters long!");
-            return false;
-        } else {
-            //must contain at least 1 number and 1 special character
-            if (!password.matches(".*\\d.*") || !password.matches(".*[!@#$%^&*].*")) {
-                System.out.println("Error: Password must contain at least 1 number and 1 special character!");
-                return false;
-            }
-        }
-        //Safety check 4: An account type must be either A or C
-        if (!(accountType.equals("A") || accountType.equals("C"))) {
-            System.out.println("Error: Account type must be either A or C!");
-            return false;
-        }
-        //Safety check 5: First name and last name must not be empty
-        if (firstName.isEmpty() || lastName.isEmpty()) {
-            System.out.println("Error: First name and last name must not be empty!");
-            return false;
-        }
 
         //Add the new account to the list
         account.put("username", username);
@@ -104,8 +121,7 @@ public class auth {
         account.put("accountType", accountType);
         listOfAccounts.add(account);
         totalAccounts++;
-        System.out.println("Account added!");
-        return true;
+        return 0;
     }
 
     public boolean deleteAccount(String username) {
@@ -135,7 +151,6 @@ public class auth {
         //Perform safety checks
         //Safety check 1: Null values are not allowed
         if (username == null) {
-            System.out.println("Error: Null values are not allowed!");
             return null;
         }
         //Start lookup
@@ -146,7 +161,6 @@ public class auth {
             }
         }
         //If not found, return an error
-        System.out.println("Error: Username not found!");
         return null;
     }
 }
@@ -210,19 +224,22 @@ class authOperations extends auth {
     }
 
     //Auth Signup
-    boolean signup(String sid, String un, String pass, String fn, String ln, String at) {
+    void signup(String sid, String un, String pass, String fn, String ln, String at) {
         //Perform checks - if the user is logged in and is an admin
         if (retrieve(sid, "accountType").equals("A")) {
-            if (addNewAccount(un, pass, fn, ln, at)) {
+            //Call addNewAccount
+            int addNewAccount = addNewAccount(un, pass, fn, ln, at);
+            if (addNewAccount == 0) {
+                System.out.println("Total Registered Accounts: " + totalAccounts);
                 System.out.println("Account created!");
-                return true;
+                //callBackMethod.apply(addNewAccount);
             } else {
                 System.out.println("Error: Account not created!");
-                return false;
+                //callBackMethod.apply(addNewAccount);
             }
         } else {
             System.out.println("Error: You are not authorized to perform this action!");
-            return false;
+            //callBackMethod.apply(6);
         }
     }
 
@@ -255,5 +272,6 @@ class authOperations extends auth {
     void logout() {
         sessionID = null;
     }
+
 
 }
