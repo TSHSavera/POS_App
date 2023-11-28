@@ -94,6 +94,9 @@ public class productStorage {
     public void changeProductDetails(String productID, String key, String value) {
         //Search for the product
         Map<String, String> product = searchProduct(productID);
+        if (product == null) {
+            throw new IllegalArgumentException("Error: Invalid argument for 'productID' was passed. - " + productID + " does not exist.");
+        }
         if (Objects.equals(key, "productID")) {
             //This should not be changed
             throw new IllegalArgumentException("Error: Invalid argument for 'key' was passed. - " + key + " cannot be changed.");
@@ -111,5 +114,35 @@ public class productStorage {
             System.out.println(productList.get(i).get("productID") + "\t" + productList.get(i).get("productName") + "\t" + productList.get(i).get("productPrice") + "\t" + productList.get(i).get("productQuantity") + "\t" + productList.get(i).get("productTotalSales") + "\t" + productList.get(i).get("productTotalProfit"));
         }
     }
+
+}
+
+class productTracker extends productStorage {
+    //Adjust the product quantity
+    public boolean adjustProductQuantity(String productID, String quantity) {
+        //Search for the product
+        Map<String, String> product = searchProduct(productID);
+        //If the product is not found, return false
+        if (product == null) return false;
+        //Get the current quantity
+        int currentQuantity = Integer.parseInt(product.get("productQuantity"));
+        //Get the new quantity
+        int newQuantity = currentQuantity + Integer.parseInt(quantity);
+        //Change the product quantity
+        changeProductDetails(productID, "productQuantity", String.valueOf(newQuantity));
+        return true;
+    }
+
+    //Show current product quantity of all products
+    public void showProductQuantity() {
+        //Print the header
+        System.out.println("Product ID\tProduct Name\tProduct Quantity");
+        //Print all products
+        for (int i = 0; i < productCount; i++) {
+            System.out.println(productList.get(i).get("productID") + "\t" + productList.get(i).get("productName") + "\t" + productList.get(i).get("productQuantity"));
+        }
+    }
+
+
 
 }
