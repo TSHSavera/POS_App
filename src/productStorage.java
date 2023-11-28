@@ -33,6 +33,7 @@ public class productStorage {
 
     //Test Values
     public boolean testProductValues(String type, String value) {
+        if (value == null) return false;
         return switch (type) {
             //Check if the value is a number
             case "productID", "productPrice", "productQuantity", "productTotalSales", "productTotalProfit" ->
