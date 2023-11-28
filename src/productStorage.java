@@ -33,8 +33,8 @@ public class productStorage {
 
     //Test Values
     public boolean testProductValues(String type, String value) {
-        if (value == null) return false;
-        return switch (type) {
+        if (value == null) return true;
+        return !switch (type) {
             //Check if the value is a number
             case "productID", "productPrice", "productQuantity", "productTotalSales", "productTotalProfit" ->
                     value.matches("[0-9]+");
@@ -94,7 +94,7 @@ public class productStorage {
     public void changeProductDetails(String productID, String key, String value) {
         //Search for the product
         Map<String, String> product = searchProduct(productID);
-        if (key == "productID") {
+        if (Objects.equals(key, "productID")) {
             //This should not be changed
             throw new IllegalArgumentException("Error: Invalid argument for 'key' was passed. - " + key + " cannot be changed.");
         }

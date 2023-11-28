@@ -219,46 +219,41 @@ public class views {
             newValue = userInp.readLine();
         } while (authHandler.testValues(key, newValue));
 
-
         //Change the account credentials
         authHandler.changeCredentials(sessionID, allAccounts.get(accountNumber - 1).get("username"), key, newValue);
     }
+
     //Add new products
     void viewAddNewProduct() throws IOException {
         String choice, productPrice, productQuantity, productName;
         //Ask for Products
         do {
             do{
-                System.out.println("Enter product name: ");
+                System.out.print("Enter product name: ");
                 productName = userInp.readLine();
-
-                if (!productHandler.testProductValues("productName", productName))
-                System.out.println("Product name only accepts alphanumeric characters!");
-
-            } while(!productHandler.testProductValues("productName", productName));
+                //Check if the input is alphanumeric
+                if (productHandler.testProductValues("productName", productName)) System.out.println("Product name only accepts alphanumeric characters!");
+            } while(productHandler.testProductValues("productName", productName));
 
             do {
-                System.out.println("Enter product price: ");
+                System.out.print("Enter product price: ");
                 productPrice = userInp.readLine();
-
-                if (!productHandler.testProductValues("productPrice", productPrice))
-                System.out.println("Product price only accepts numeric characters!");
-
-            } while (!productHandler.testProductValues("productPrice", productPrice));
+                //Check if the input is numeric
+                if (productHandler.testProductValues("productPrice", productPrice)) System.out.println("Product price only accepts numeric characters!");
+            } while (productHandler.testProductValues("productPrice", productPrice));
 
             do {
-                System.out.println("Current Stock: ");
+                System.out.print("Current Stock: ");
                 productQuantity = userInp.readLine();
+                //Check if the input is numeric
+                if (productHandler.testProductValues("productQuantity", productQuantity)) System.out.println("Current Stock only accepts numeric characters!");
 
-                if (!productHandler.testProductValues("productQuantity", productQuantity))
-                System.out.println("Current Stock only accepts numeric characters!");
-
-            } while (!productHandler.testProductValues("productQuantity", productQuantity));
+            } while (productHandler.testProductValues("productQuantity", productQuantity));
 
             productHandler.addProduct(productName, productPrice, productQuantity);
             System.out.println("Product added successfully!");
 
-            System.out.println("Do you want to add another product? y/n: ");
+            System.out.print("Do you want to add another product? y/n: ");
             choice = userInp.readLine();
 
         } while (choice.equalsIgnoreCase("y"));
