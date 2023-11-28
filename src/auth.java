@@ -130,12 +130,12 @@ public class auth {
         return 0;
     }
 
-    public boolean deleteAccount(String sid, String username) {
+    public String deleteAccount(String sid, String username) {
         //Perform safety checks
         //Safety check 1: Null values are not allowed
         if (username == null) {
             System.out.println("Error: Null values are not allowed!");
-            return false;
+            return null;
         }
         //Safety check 2: The logged-in user must be an admin
         if (Objects.requireNonNull(authOperations.retrieveCurrentUser(sid)).get("accountType").equalsIgnoreCase("A")) {
@@ -144,17 +144,16 @@ public class auth {
                 if (listOfAccounts.get(i).get("username").equals(username)) {
                     listOfAccounts.remove(i);
                     totalAccounts--;
-                    System.out.println("Account with username of '" + username + "' was deleted successfully!");
-                    return true;
+                    return username;
                 }
             }
         } else {
             System.out.println("Error: You are not authorized to perform this action!");
-            return false;
+            return null;
         }
         //If not found, return an error
         System.out.println("Error: Username not found!");
-        return false;
+        return null;
     }
 
     public Map<String, String> accountLookup(String username) {
@@ -209,7 +208,7 @@ class authOperations extends auth {
     //Auth retrieveCurrentUser all accounts for admin
     List<Map<String, String>> retrieveAllAccounts(String sid) {
         //Perform checks - if the user is logged in and is an admin
-        if (retrieveCurrentUser(sid).get("accountType").equalsIgnoreCase("A")) {
+        if (Objects.requireNonNull(retrieveCurrentUser(sid)).get("accountType").equalsIgnoreCase("A")) {
             return listOfAccounts;
         } else {
             System.out.println("Error: You are not authorized to perform this action!");
@@ -243,7 +242,7 @@ class authOperations extends auth {
     //Auth Signup
     void signup(String sid, String un, String pass, String fn, String ln, String at) {
         //Perform checks - if the user is logged in and is an admin
-        if (retrieveCurrentUser(sid).get("accountType").equalsIgnoreCase("A")) {
+        if (Objects.requireNonNull(retrieveCurrentUser(sid)).get("accountType").equalsIgnoreCase("A")) {
             //Call addNewAccount
             int addNewAccount = addNewAccount(un, pass, fn, ln, at);
             if (addNewAccount == 0) {

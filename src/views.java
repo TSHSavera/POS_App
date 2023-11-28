@@ -12,7 +12,7 @@ public class views {
     BufferedReader userInp = new BufferedReader(new InputStreamReader(System.in));
     authOperations authHandler = new authOperations();
 
-    //Initialize new account array
+    //Initialize a new account array
     String[] newAccount = new String[5];
 
     views(String sessionID) throws IOException {
@@ -165,7 +165,12 @@ public class views {
         System.out.print("Enter the account number to delete: ");
         int accountNumber = Integer.parseInt(userInp.readLine());
         //Delete the account
-        authHandler.deleteAccount(sessionID, allAccounts.get(accountNumber - 1).get("username"));
+        String deleteAccount = authHandler.deleteAccount(sessionID, allAccounts.get(accountNumber - 1).get("username"));
+        if (deleteAccount != null) {
+            System.out.println("Account with username of '" + deleteAccount + "' was deleted successfully!");
+        } else {
+            System.out.println("Account deletion failed!");
+        }
     }
 
     void viewChangeAccountDetails() throws IOException {
@@ -189,26 +194,14 @@ public class views {
         int option = Integer.parseInt(userInp.readLine());
 
         //Change the option to key
-        String key;
-        switch (option) {
-            case 1:
-                key = "username";
-                break;
-            case 2:
-                key = "password";
-                break;
-            case 3:
-                key = "firstName";
-                break;
-            case 4:
-                key = "lastName";
-                break;
-            case 5:
-                key = "accountType";
-                break;
-            default:
-                throw new IllegalArgumentException("Error: Invalid argument for 'option' was passed. - " + option);
-        }
+        String key = switch (option) {
+            case 1 -> "username";
+            case 2 -> "password";
+            case 3 -> "firstName";
+            case 4 -> "lastName";
+            case 5 -> "accountType";
+            default -> throw new IllegalArgumentException("Error: Invalid argument for 'option' was passed. - " + option);
+        };
         //Ask for the new value
         String newValue;
         do {
