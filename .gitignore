@@ -27,9 +27,6 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+.idea/discord.xml
 *.xml
-*.xml
-.idea/misc.xml
-.idea/misc.xml
-project.iml
-*.iml
+.idea/uiDesigner.xml
