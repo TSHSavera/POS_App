@@ -39,7 +39,7 @@ public class productStorage {
             case "productID", "productPrice", "productQuantity", "productTotalSales", "productTotalProfit" ->
                     value.matches("[0-9]+");
             //Check if the value is an alphanumeric string
-            case "productName" -> value.matches("[a-zA-Z0-9]+");
+            case "productName" -> value.matches("[a-zA-Z0-9 ]+");
             default -> false;
         };
     }

@@ -11,6 +11,7 @@ public class views {
     private String sessionID;
     BufferedReader userInp = new BufferedReader(new InputStreamReader(System.in));
     authOperations authHandler = new authOperations();
+    productStorage productHandler = new productStorage();
 
     //Initialize a new account array
     String[] newAccount = new String[5];
@@ -26,7 +27,12 @@ public class views {
             System.out.println("2. View accounts");
             System.out.println("3. Delete account");
             System.out.println("4. Change account details");
-            System.out.println("5. Logout");
+            System.out.println("5. Add new products");
+            System.out.println("6. Delete product");
+            System.out.println("7. View product list");
+            System.out.println("8. Change product details");
+            System.out.println("9. Search product");
+            System.out.println("10. Logout");
             System.out.print("Enter option: ");
             int option = Integer.parseInt(userInp.readLine());
             this.sessionID = sessionID;
@@ -37,7 +43,8 @@ public class views {
             System.out.println("Please select an option: ");
             System.out.println("1. Create new transaction");
             System.out.println("2. View transactions");
-            System.out.println("3. Logout");
+            System.out.println("3. Search product");
+            System.out.println("4. Logout");
             System.out.print("Enter option: ");
             int option = Integer.parseInt(userInp.readLine());
             this.sessionID = sessionID;
@@ -64,6 +71,9 @@ public class views {
                 viewChangeAccountDetails();
                 break;
             case 5:
+                viewAddNewProduct();
+                break;
+            case 10:
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
@@ -213,5 +223,47 @@ public class views {
         //Change the account credentials
         authHandler.changeCredentials(sessionID, allAccounts.get(accountNumber - 1).get("username"), key, newValue);
     }
+    //Add new products
+    void viewAddNewProduct() throws IOException {
+        String choice, productPrice, productQuantity, productName;
+        //Ask for Products
+        do {
+            do{
+                System.out.println("Enter product name: ");
+                productName = userInp.readLine();
+
+                if (!productHandler.testProductValues("productName", productName))
+                System.out.println("Product name only accepts alphanumeric characters!");
+
+            } while(!productHandler.testProductValues("productName", productName));
+
+            do {
+                System.out.println("Enter product price: ");
+                productPrice = userInp.readLine();
+
+                if (!productHandler.testProductValues("productPrice", productPrice))
+                System.out.println("Product price only accepts numeric characters!");
+
+            } while (!productHandler.testProductValues("productPrice", productPrice));
+
+            do {
+                System.out.println("Current Stock: ");
+                productQuantity = userInp.readLine();
+
+                if (!productHandler.testProductValues("productQuantity", productQuantity))
+                System.out.println("Current Stock only accepts numeric characters!");
+
+            } while (!productHandler.testProductValues("productQuantity", productQuantity));
+
+            productHandler.addProduct(productName, productPrice, productQuantity);
+            System.out.println("Product added successfully!");
+
+            System.out.println("Do you want to add another product? y/n: ");
+            choice = userInp.readLine();
+
+        } while (choice.equalsIgnoreCase("y"));
+    }
+
+
 
 }
