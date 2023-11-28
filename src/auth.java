@@ -69,7 +69,7 @@ public class auth {
     public boolean testValues(String type, String value) {
         if (value == null) {
             System.out.println("Error: Null values are not allowed!");
-            return true;
+            return false;
         }
         switch (type) {
             case "username":
@@ -303,7 +303,7 @@ class authOperations extends auth {
                         if (accountLookup(value) == null) {
                             //Change the username
                             for (int i = 0; i < totalAccounts; i++) {
-                                if (listOfAccounts.get(i).get("username").equals(account.get("username"))) {
+                                if (listOfAccounts.get(i).get("username").equals(un)) {
                                     listOfAccounts.get(i).put("username", value);
                                     System.out.println("Username changed successfully!");
                                     break;

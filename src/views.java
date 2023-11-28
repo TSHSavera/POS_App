@@ -213,4 +213,5 @@ public class views {
         //Change the account credentials
         authHandler.changeCredentials(sessionID, allAccounts.get(accountNumber - 1).get("username"), key, newValue);
     }
+
 }
