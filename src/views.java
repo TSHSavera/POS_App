@@ -41,7 +41,7 @@ public class views {
         if (accountData.get("accountType").equals("C")) {
             System.out.println("Welcome Cashier " + accountData.get("username"));
             System.out.println("Please select an option: ");
-            System.out.println("1. Create new transaction");
+            System.out.println("1. Create new transactionStorage");
             System.out.println("2. View transactions");
             System.out.println("3. Search product");
             System.out.println("4. Logout");
@@ -73,6 +73,18 @@ public class views {
             case 5:
                 viewAddNewProduct();
                 break;
+            case 6:
+                viewDeleteProduct();
+                break;
+            case 7:
+                viewProductList();
+                break;
+            case 8:
+                viewChangeProductDetails();
+                break;
+            case 9:
+                viewSearchProduct();
+                break;
             case 10:
                 System.out.println("Logout");
                 authOperations.logout();
@@ -86,7 +98,7 @@ public class views {
     public void cashierOps(int option) {
         switch (option) {
             case 1:
-                System.out.println("Create new transaction");
+                System.out.println("Create new transactionStorage");
                 break;
             case 2:
                 System.out.println("View transactions");
@@ -259,6 +271,67 @@ public class views {
         } while (choice.equalsIgnoreCase("y"));
     }
 
+    //Delete product
+    void viewDeleteProduct() throws IOException {
+        //Ask for the product ID
+        System.out.print("Enter the product ID to delete: ");
+        String productID = userInp.readLine();
+        //Delete the product
+        String deleteProduct = productHandler.searchProduct(productID).deleteProduct();
+        if (deleteProduct != null) {
+            System.out.println("Product with ID of '" + deleteProduct + "' was deleted successfully!");
+        } else {
+            System.out.println("Product deletion failed!");
+        }
+    }
 
+    //View product list
+    void viewProductList() {
+        productHandler.printAllProducts();
+    }
+
+    //Change product details
+    void viewChangeProductDetails() throws IOException {
+        //Ask for the product ID
+        System.out.print("Enter the product ID to change: ");
+        String productID = userInp.readLine();
+        //Ask what to change
+        System.out.println("What do you want to change?");
+        System.out.println("1. Product Name");
+        System.out.println("2. Product Price");
+        System.out.println("3. Product Quantity");
+        System.out.print("Enter option: ");
+        int option = Integer.parseInt(userInp.readLine());
+        //Change the option to key
+        String key = switch (option) {
+            case 1 -> "productName";
+            case 2 -> "productPrice";
+            case 3 -> "productQuantity";
+            default -> throw new IllegalArgumentException("Error: Invalid argument for 'option' was passed. - " + option);
+        };
+        //Ask for the new value
+        String newValue;
+        do {
+            System.out.print("Enter the new value: ");
+            newValue = userInp.readLine();
+        } while (productHandler.testProductValues(key, newValue));
+        //Change the product details
+        productHandler.searchProduct(productID).changeProductDetails(key, newValue);
+    }
+
+    //Search product
+    void viewSearchProduct() throws IOException {
+        //Ask for the product ID
+        System.out.print("Enter the product ID to search: ");
+        String productID = userInp.readLine();
+        //Search the product
+        String searchProduct = productHandler.searchProduct(productID).getProductName();
+        if (searchProduct != null) {
+            System.out.println("Product found!");
+            productHandler.searchProduct(productID).printProductDetails();
+        } else {
+            System.out.println("Product not found!");
+        }
+    }
 
 }

@@ -9,26 +9,23 @@ public class productStorage {
     //Total number of products
     static int productCount = 0;
 
+    //Temp storage for search queries
+    static Map<String, String> searchInstance = new HashMap<>();
+
     //Instantiate the class
     public productStorage() {
-        //Create sample products
-        productInstance.put("productID", "1");
-        productInstance.put("productName", "Sample Product 1");
-        productInstance.put("productPrice", "100");
-        productInstance.put("productQuantity", "100");
-        productInstance.put("productTotalSales", "0");
-        productInstance.put("productTotalProfit", "0");
-        productList.add(productInstance);
-        productCount++;
+        if (productList.isEmpty()) {
+            //Create sample products
+            productInstance.put("productID", "1");
+            productInstance.put("productName", "Sample Product 1");
+            productInstance.put("productPrice", "100");
+            productInstance.put("productQuantity", "100");
+            productInstance.put("productTotalSales", "0");
+            productInstance.put("productTotalProfit", "0");
+            productList.add(productInstance);
+            productCount++;
 
-        productInstance.put("productID", "2");
-        productInstance.put("productName", "Sample Product 2");
-        productInstance.put("productPrice", "200");
-        productInstance.put("productQuantity", "200");
-        productInstance.put("productTotalSales", "0");
-        productInstance.put("productTotalProfit", "0");
-        productList.add(productInstance);
-        productCount++;
+        }
     }
 
     //Test Values
@@ -61,7 +58,7 @@ public class productStorage {
         productCount++;
     }
 
-    public Map<String, String> searchProduct(String productID) {
+    public productStorage searchProduct(String productID) {
         //Perform binary search for the product
         int first = 0;
         int last = productCount - 1;
@@ -69,7 +66,8 @@ public class productStorage {
 
         while (last >= first) {
             if (Objects.equals(productID, productList.get(mid).get("productID"))) {
-                return productList.get(mid);
+                searchInstance = productList.get(mid);
+                return this;
             } else if (Integer.parseInt(productID) > Integer.parseInt(productList.get(mid).get("productID"))) {
                 first = mid + 1;
             } else {
@@ -80,29 +78,74 @@ public class productStorage {
         return null;
     }
 
+    //Create a chain method for searching products
+    //Get the product name
+    public String getProductName() {
+        if (searchInstance == null) {
+            throw new IllegalArgumentException("Error: Invalid argument for 'product' was passed. - " + searchInstance + " does not exist.");
+        }
+        //Return the product name
+        return searchInstance.get("productName");
+    }
+    //Get the product quantity
+    public int getProductQuantity() {
+        if (searchInstance == null) {
+            throw new IllegalArgumentException("Error: Invalid argument for 'product' was passed. - " + searchInstance + " does not exist.");
+        }
+        //Return the product quantity
+        return Integer.parseInt(searchInstance.get("productQuantity"));
+    }
+    //Get the product total sales
+    public double getProductTotalSales() {
+        if (searchInstance == null) {
+            throw new IllegalArgumentException("Error: Invalid argument for 'product' was passed. - " + searchInstance + " does not exist.");
+        }
+        //Return the product total sales
+        return Double.parseDouble(searchInstance.get("productTotalSales"));
+    }
+    //Get the product price
+    public double getProductPrice() {
+        if (searchInstance == null) {
+            throw new IllegalArgumentException("Error: Invalid argument for 'product' was passed. - " + searchInstance + " does not exist.");
+        }
+        //Return the product price
+        return Double.parseDouble(searchInstance.get("productPrice"));
+    }
+
+    //Print all details
+    public void printProductDetails() {
+        if (searchInstance == null) {
+            throw new IllegalArgumentException("Error: Invalid argument for 'product' was passed. - " + searchInstance + " does not exist.");
+        }
+        //Print the header
+        System.out.println("Product ID\tProduct Name\tProduct Price\tProduct Quantity\tProduct Total Sales\tProduct Total Profit");
+        //Print the product details
+        System.out.println(searchInstance.get("productID") + "\t" + searchInstance.get("productName") + "\t" + searchInstance.get("productPrice") + "\t" + searchInstance.get("productQuantity") + "\t" + searchInstance.get("productTotalSales") + "\t" + searchInstance.get("productTotalProfit"));
+    }
+
     //Delete a product
-    public void deleteProduct(String productID) {
-        //Search for the product
-        Map<String, String> product = searchProduct(productID);
+    public String deleteProduct() {
+        if (searchInstance == null) {
+            throw new IllegalArgumentException("Error: There's no such product to registered.");
+        }
         //Delete the product
-        productList.remove(product);
+        productList.remove(searchInstance);
         //Decrement the product count
         productCount--;
+        return searchInstance.get("productID");
     }
 
     //Change product details
-    public void changeProductDetails(String productID, String key, String value) {
-        //Search for the product
-        Map<String, String> product = searchProduct(productID);
-        if (product == null) {
-            throw new IllegalArgumentException("Error: Invalid argument for 'productID' was passed. - " + productID + " does not exist.");
+    public void changeProductDetails(String key, String value) {
+        if (searchInstance == null) {
+            throw new IllegalArgumentException("Error: There's no such product to registered.");
         }
         if (Objects.equals(key, "productID")) {
             //This should not be changed
             throw new IllegalArgumentException("Error: Invalid argument for 'key' was passed. - " + key + " cannot be changed.");
         }
         //Change the product details
-        product.put(key, value);
+        searchInstance.put(key, value);
     }
 
     //Print all products
@@ -115,21 +158,23 @@ public class productStorage {
         }
     }
 
+
+
 }
 
 class productTracker extends productStorage {
     //Adjust the product quantity
     public boolean adjustProductQuantity(String productID, String quantity) {
         //Search for the product
-        Map<String, String> product = searchProduct(productID);
+        productStorage product = searchProduct(productID);
         //If the product is not found, return false
         if (product == null) return false;
         //Get the current quantity
-        int currentQuantity = Integer.parseInt(product.get("productQuantity"));
+        int currentQuantity = Integer.parseInt(searchInstance.get("productQuantity"));
         //Get the new quantity
         int newQuantity = currentQuantity + Integer.parseInt(quantity);
         //Change the product quantity
-        changeProductDetails(productID, "productQuantity", String.valueOf(newQuantity));
+        changeProductDetails("productQuantity", String.valueOf(newQuantity));
         return true;
     }
 
