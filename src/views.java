@@ -1,7 +1,5 @@
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.io.*;
-import java.util.Objects;
 
 //package src;
 public class views {
@@ -153,7 +151,7 @@ public class views {
     //This function is called when the admin wants to view all accounts
     void viewViewAccounts() {
         //Retrieve all accounts
-        List<Map<String, String>> allAccounts = authHandler.retrieveAllAccounts(sessionID);
+        ArrayList<HashMap<String, String>> allAccounts = authHandler.retrieveAllAccounts(sessionID);
 
         //Print all accounts
         System.out.println("Total Registered Accounts: " + allAccounts.size());
@@ -181,7 +179,7 @@ public class views {
         //Retrieve all accounts
         viewViewAccounts();
         //Store all accounts
-        List<Map<String, String>> allAccounts = authHandler.retrieveAllAccounts(sessionID);
+        ArrayList<HashMap<String, String>> allAccounts = authHandler.retrieveAllAccounts(sessionID);
 
         //Ask for the account to delete
         System.out.print("Enter the account number to delete: ");
@@ -199,11 +197,18 @@ public class views {
         //Retrieve all accounts
         viewViewAccounts();
         //Store all accounts
-        List<Map<String, String>> allAccounts = authHandler.retrieveAllAccounts(sessionID);
+        ArrayList<HashMap<String, String>> allAccounts = authHandler.retrieveAllAccounts(sessionID);
 
         //Ask for the account to change
-        System.out.print("Enter the account number to change: ");
-        int accountNumber = Integer.parseInt(userInp.readLine());
+        int accountNumber;
+        do {
+            System.out.print("Enter the account number to change: ");
+            accountNumber = Integer.parseInt(userInp.readLine());
+            if (accountNumber > allAccounts.size()) {
+                System.out.println("Out of bounds! Please enter a valid account number.");
+            }
+        } while (accountNumber > allAccounts.size());
+
 
         //Ask what to change
         System.out.println("What do you want to change?");
@@ -277,15 +282,19 @@ public class views {
         System.out.print("Enter the product ID to delete: ");
         String productID = userInp.readLine();
         //Delete the product
-        String deleteProduct = productHandler.searchProduct(productID).deleteProduct();
+        String deleteProduct;
+        try {
+            deleteProduct = productHandler.searchProduct(productID).getProductName();
+        } catch (NullPointerException e) {
+            System.out.println("Product not found!");
+            return;
+        }
         if (deleteProduct != null) {
             System.out.println("Product with ID of '" + deleteProduct + "' was deleted successfully!");
-        } else {
-            System.out.println("Product deletion failed!");
         }
     }
 
-    //View product list
+    //View the product list
     void viewProductList() {
         productHandler.printAllProducts();
     }
@@ -295,6 +304,12 @@ public class views {
         //Ask for the product ID
         System.out.print("Enter the product ID to change: ");
         String productID = userInp.readLine();
+        try {
+            productHandler.searchProduct(productID).getProductName();
+        } catch (NullPointerException e) {
+            System.out.println("Product not found!");
+            return;
+        }
         //Ask what to change
         System.out.println("What do you want to change?");
         System.out.println("1. Product Name");
@@ -324,13 +339,17 @@ public class views {
         //Ask for the product ID
         System.out.print("Enter the product ID to search: ");
         String productID = userInp.readLine();
+        String searchProduct;
         //Search the product
-        String searchProduct = productHandler.searchProduct(productID).getProductName();
+        try {
+            searchProduct = productHandler.searchProduct(productID).getProductName();
+        } catch (NullPointerException e) {
+            System.out.println("Product not found!");
+            return;
+        }
         if (searchProduct != null) {
             System.out.println("Product found!");
             productHandler.searchProduct(productID).printProductDetails();
-        } else {
-            System.out.println("Product not found!");
         }
     }
 

@@ -33,10 +33,10 @@ import java.util.*;
 
 public class auth {
     //Create a storage for each account credential
-    static Map<String, String> account = new HashMap<>();
+    static HashMap<String, String> account = new HashMap<>();
 
     //Create a list of accounts
-    protected static List<Map<String, String>> listOfAccounts = new ArrayList<>();
+    protected static ArrayList<HashMap<String, String>> listOfAccounts = new ArrayList<>();
 
     //Total number of accounts
     static int totalAccounts = 0;
@@ -206,7 +206,7 @@ class authOperations extends auth {
     }
 
     //Auth retrieveCurrentUser all accounts for admin
-    List<Map<String, String>> retrieveAllAccounts(String sid) {
+    ArrayList<HashMap<String, String>> retrieveAllAccounts(String sid) {
         //Perform checks - if the user is logged in and is an admin
         if (Objects.requireNonNull(retrieveCurrentUser(sid)).get("accountType").equalsIgnoreCase("A")) {
             return listOfAccounts;

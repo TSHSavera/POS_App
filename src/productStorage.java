@@ -1,10 +1,10 @@
 import java.util.*;
 public class productStorage {
     //Create a storage for each product
-    static Map<String, String> productInstance = new HashMap<>();
+    static HashMap<String, String> productInstance = new HashMap<>();
 
     //Create a list of products
-    static List<Map<String, String>> productList = new ArrayList<>();
+    static ArrayList<HashMap<String, String>> productList = new ArrayList<HashMap<String, String>>();
 
     //Total number of products
     static int productCount = 0;
@@ -44,7 +44,7 @@ public class productStorage {
     //Add a new product
     public void addProduct(String productName, String productPrice, String productQuantity) {
         //Create a new product
-        Map<String, String> newProduct = new HashMap<>();
+        HashMap<String, String> newProduct = new HashMap<>();
         //Add the product details
         newProduct.put("productID", String.valueOf(productCount + 1));
         newProduct.put("productName", productName);
