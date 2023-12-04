@@ -76,7 +76,7 @@ public class dataStorage {
         StringBuilder listValues = new StringBuilder();
         for (HashMap<String, ArrayList<String>> pl: listToSave) {
             for (String key: pl.keySet()) {
-                listValues.append(key).append("=").append(pl.get(key)).append(",");
+                listValues.append(key).append("=").append(pl.get(key)).append("~");
             }
             listValues.append("#");
         }
@@ -89,6 +89,56 @@ public class dataStorage {
         System.out.println("File saved successfully");
 
     }
+
+    //Read TransactionItems file
+    public ArrayList<HashMap<String, ArrayList<String>>> readItemsFile(String fiLeName) {
+        try {
+            //Store the data in a string
+            BufferedReader br = new BufferedReader(new FileReader(fiLeName));
+            line = br.readLine();
+
+            ArrayList<HashMap<String, ArrayList<String>>> vList;
+            vList = stringToItemsMaps(line);
+            return vList;
+
+        } catch (IOException e) {
+            System.out.println("Failed to read file.");
+            return null;
+        }
+    }
+
+    ArrayList<HashMap<String, ArrayList<String>>> stringToItemsMaps(String items) {
+        ArrayList<HashMap<String,ArrayList<String>>> list = new ArrayList<>();
+        //Get values from the string
+        String[] listValues = items.split("~#");
+        //Loop through the values
+        for (String lv: listValues) {
+            //Create a new HashMap
+            HashMap<String,ArrayList<String>> map = new HashMap<>();
+            //Get the key-value pairs
+            String[] keyValues = lv.split("~");
+            //Loop through the key-value pairs
+            for (String kv: keyValues) {
+                //Split the key-value pairs
+                String[] split = kv.split("=");
+                //Get the key and value
+                String key = split[0].trim();
+                //Process Array of Data
+                String value = split[1];
+                //Split the value of the key
+                String[] valueArray = value.split(",");
+                //Add the value to the ArrayList
+                ArrayList<String> valuesArray = new ArrayList<>(Arrays.asList(valueArray));
+                
+                //Put the key-value pair in the HashMap
+                map.put(key,valuesArray);
+            }
+            //Add the HashMap to the ArrayList
+            list.add(map);
+        }
+        return list;
+    }
+
 
     //Override the data in the specific class
     public static void overrideAuthData(ArrayList<HashMap<String, String>> aList) {
@@ -110,6 +160,14 @@ public class dataStorage {
     public static void overrideTransactionData(ArrayList<HashMap<String, String>> tList){
         try {
             transactionStorage.transactionStorage = tList;
+        } catch (NullPointerException e) {
+            System.out.println("Overriding Failed, loading default values.");
+        }
+    }
+
+    public static void overrideItemsData(ArrayList<HashMap<String, ArrayList<String>>> iList){
+        try {
+            transactionStorage.itemsList = iList;
         } catch (NullPointerException e) {
             System.out.println("Overriding Failed, loading default values.");
         }

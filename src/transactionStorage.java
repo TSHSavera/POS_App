@@ -19,6 +19,7 @@ public class transactionStorage {
         if (transactionStorage == null || transactionStorage.isEmpty()) {
             //Re-instantiate the class
             transactionStorage = new ArrayList<>();
+            itemsList = new ArrayList<>();
             double totalPrice = 0;
             //Add items
             HashMap<String, ArrayList<String>> itemsInstance = new HashMap<>();
