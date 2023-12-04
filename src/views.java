@@ -12,6 +12,8 @@ public class views {
     productStorage productHandler = new productStorage();
     //Create a new transaction
     transactionStorage transactionHandler = new transactionStorage();
+    //File Saving
+    dataStorage dataHandler = new dataStorage();
 
     //Initialize a new account array
     String[] newAccount = new String[5];
@@ -35,7 +37,9 @@ public class views {
             System.out.println("10. Create new transaction");
             System.out.println("11. View transactions");
             System.out.println("12. Remove transaction");
-            System.out.println("13. Logout");
+            System.out.println("13. Save Product File");
+            System.out.println("14. Save Account File");
+            System.out.println("15. Logout");
             System.out.print("Enter option: ");
             int option = Integer.parseInt(userInp.readLine());
             this.sessionID = sessionID;
@@ -98,9 +102,18 @@ public class views {
                 viewRemoveTransaction();
                 break;
             case 13:
+                viewSaveProduct();
+                break;
+            case 14:
+                viewSaveAccount();
+                break;
+            case 15:
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
+                break;
+            case 16:
+                viewReadFile();
                 break;
             default:
                 System.out.println("Error: Invalid argument for 'option' was passed. - " + option);
@@ -314,6 +327,7 @@ public class views {
 
     //View the product list
     void viewProductList() {
+        System.out.println(productStorage.productList);
         productHandler.printAllProducts();
     }
 
@@ -444,5 +458,30 @@ public class views {
         } catch (NullPointerException e) {
             System.out.println("Transaction not found!");
         }
+    }
+    void viewSaveProduct()throws IOException{
+        String fileName = "Product.json";
+        System.out.println();
+
+        //Converts Product list data to Json
+        dataHandler.toJson(productStorage.productList);
+
+        //Storing the file
+        dataHandler.storeToFile2(fileName);
+        System.out.println();
+    }
+    void viewSaveAccount()throws IOException {
+        String fileName = "Account.json";
+        System.out.println();
+
+        //Converts Account list data to json
+        dataHandler.toJson(authHandler.listOfAccounts);
+
+        dataHandler.storeToFile(fileName);
+        System.out.println();
+    }
+    void viewReadFile()throws IOException{
+        String fileName = "Product.json";
+        dataHandler.readJson2(fileName);
     }
 }

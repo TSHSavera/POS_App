@@ -77,5 +77,63 @@ public class dataStorage {
         productStorage.productList = convertedJson;
     }
 
+    void storeToFile2(String fileName) throws IOException {
+        FileWriter fileWriter = new FileWriter(fileName);
+        try {
+            fileWriter.write(String.valueOf(productStorage.productList));
+            fileWriter.close();
+        } catch (IOException e) {
+            System.out.println("Failed to save file");
+        }
+        System.out.println("File saved successfully");
+
+    }
+    ArrayList<HashMap<String,String>> stringToMaps(String str){
+        ArrayList<HashMap<String,String>> list = new ArrayList<>();
+
+        //Converter to remove brackets and braces
+        String var = str.replaceAll("/\\[/g", "");
+        var = var.replaceAll("/]/g", "");
+        var = var.replaceAll("/\\{/g", "");
+        //var = var.replace("}", "");
+
+        HashMap<String, String> a = new HashMap<>();
+        String[] maps = var.split("},");
+
+        for (String map: maps) {
+            String[] keyValues = var.split(",");
+
+            for (String kv : keyValues) {
+
+                String[] split = kv.split("=");
+                String key = split[0].trim();
+                String value = split[1];
+
+                a.put(key, value);
+            }
+            list.add(a);
+        }
+        return list;
+    }
+
+    public void readJson2(String jsonFile) throws IOException {
+        try {
+            //Store the data in a string
+            BufferedReader br = new BufferedReader(new FileReader(jsonFile));
+            line = br.readLine(); //remove [
+            System.out.println(line);
+
+            ArrayList<HashMap<String, String>> pList = new ArrayList<HashMap<String, String>>();
+            pList = stringToMaps(line);
+            System.out.println(pList);
+            productStorage.productList = pList;
+
+           // System.out.println(pList.get(0).get("productID"));
+
+        } catch (IOException e) {
+            System.out.println("Failed to read file.");
+        }
+    }
+
 
 }
