@@ -42,7 +42,8 @@ public class views {
             System.out.println("13. Remove transaction");
             System.out.println("14. Save Product File");
             System.out.println("15. Save Account File");
-            System.out.println("16. Logout");
+            System.out.println("16. Save Transaction File");
+            System.out.println("17. Logout");
 
             System.out.print("Enter option: ");
             int option = Integer.parseInt(userInp.readLine());
@@ -117,12 +118,12 @@ public class views {
                 viewSaveAccount();
                 break;
             case 16:
+                viewSaveTransaction();
+                break;
+            case 17:
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
-                break;
-            case 17:
-                viewStoreItemsToFile();
                 break;
             default:
                 System.out.println("Error: Invalid argument for 'option' was passed. - " + option);
@@ -502,15 +503,18 @@ public class views {
 
     }
 
-    private void viewStoreItemsToFile() throws IOException {
-        String fileName = "TransactionItems";
+    void viewSaveTransaction() throws IOException {
+        String fileName = "Transaction";
         System.out.println();
 
         //Converts Transaction list data to json
-        dataHandler.storeToItemsFile(fileName, transactionStorage.itemsList);
+        dataHandler.storeToFile(fileName, transactionStorage.transactionStorage);
+        //Save Items too
+        dataHandler.storeToItemsFile("TransactionItems", transactionStorage.itemsList);
 
         System.out.println();
     }
+
     void viewGetPrice()throws IOException{
         String productID;
 
