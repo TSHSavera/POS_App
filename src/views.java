@@ -19,7 +19,8 @@ public class views {
     //Initialize a new account array
     String[] newAccount = new String[5];
 
-    public views()throws IOException{}
+    int option, option1;
+
     views(String sessionID) throws IOException {
         //Retrieve account data
         Map<String, String> accountData = authOperations.retrieveCurrentUser(sessionID);
@@ -27,45 +28,68 @@ public class views {
         //Check the account type
         if (Objects.requireNonNull(accountData).get("accountType").equalsIgnoreCase("A")) {
             System.out.println("Welcome Admin " + accountData.get("firstName"));
-            System.out.println("Please select an option: ");
-            System.out.println("1. Add new account");
-            System.out.println("2. View accounts");
-            System.out.println("3. Delete account");
-            System.out.println("4. Change account details");
-            System.out.println("5. Add new products");
-            System.out.println("6. Delete product");
-            System.out.println("7. View product list");
-            System.out.println("8. Change product details");
-            System.out.println("9. Search product");
-            System.out.println("10. Get the product price");
-            System.out.println("11. Create new transaction");
-            System.out.println("12. View transactions");
-            System.out.println("13. Remove transaction");
-            System.out.println("14. Save Product File");
-            System.out.println("15. Save Account File");
-            System.out.println("16. Save Transaction File");
-            System.out.println("17. Show the quantity of all products");
-            System.out.println("18. Logout");
+            do {
+                System.out.println("Please select an option: ");
+                System.out.println("1. Add new account");
+                System.out.println("2. View accounts");
+                System.out.println("3. Delete account");
+                System.out.println("4. Change account details");
+                System.out.println("5. Add new products");
+                System.out.println("6. Delete product");
+                System.out.println("7. View product list");
+                System.out.println("8. Change product details");
+                System.out.println("9. Search product");
+                System.out.println("10. Get the product price");
+                System.out.println("11. Create new transaction");
+                System.out.println("12. View transactions");
+                System.out.println("13. Remove transaction");
+                System.out.println("14. Save Product File");
+                System.out.println("15. Save Account File");
+                System.out.println("16. Save Transaction File");
+                System.out.println("17. Show the quantity of all products");
+                System.out.println("18. Logout");
 
-            System.out.print("Enter option: ");
-            int option = Integer.parseInt(userInp.readLine());
+                try {
+                    System.out.print("Enter option: ");
+                    option = Integer.parseInt(userInp.readLine());
+
+                    if (option < 1 || option > 18) {
+                        System.out.println("\nInvalid input range\n");
+                    }
+                } catch (NumberFormatException e){
+                    System.out.println("\nPlease enter a valid option!\n");
+                }
+            } while(option < 1 || option > 18);
+            
             this.sessionID = sessionID;
             adminOps(option);
-
-
         }
+
+
         if (accountData.get("accountType").equalsIgnoreCase("C")) {
             System.out.println("Welcome Cashier " + accountData.get("username"));
-            System.out.println("Please select an option: ");
-            System.out.println("1. Create new transaction");
-            System.out.println("2. View transactions");
-            System.out.println("3. Search product");
-            System.out.println("4. Get the product price");
-            System.out.println("5. Get product quantity");
-            System.out.println("6. Show the quantity of all products");
-            System.out.println("7. Logout");
-            System.out.print("Enter option: ");
-            int option = Integer.parseInt(userInp.readLine());
+            do {
+                System.out.println("Please select an option: ");
+                System.out.println("1. Create new transaction");
+                System.out.println("2. View transactions");
+                System.out.println("3. Search product");
+                System.out.println("4. Get the product price");
+                System.out.println("5. Get product quantity");
+                System.out.println("6. Show the quantity of all products");
+                System.out.println("7. Logout");
+
+                try {
+                    System.out.print("Enter option: ");
+                    option1 = Integer.parseInt(userInp.readLine());
+
+                    if (option < 1 || option > 18) {
+                        System.out.println("\nInvalid input range. Please enter a valid option!\n");
+                    }
+                } catch(NumberFormatException e){
+                    System.out.println("\nPlease enter a valid option!\n");
+                }
+            } while (option < 1 || option > 18);
+
             this.sessionID = sessionID;
             cashierOps(option);
         }
@@ -438,7 +462,7 @@ public class views {
                     if (productHandler.searchProduct(productID) == null) {
                         System.out.println("Product not found!");
                     }
-                };
+                }
             } while (productHandler.testProductValues("productID", productID) && productHandler.searchProduct(productID) != null);
 
             do {
