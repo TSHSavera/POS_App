@@ -540,4 +540,7 @@ public class views {
         }
     }
 
+    void clearScreen() throws IOException, InterruptedException {
+        new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+    }
 }
