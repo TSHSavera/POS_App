@@ -41,6 +41,7 @@ public class views {
             System.out.println("13. Save Product File");
             System.out.println("14. Save Account File");
             System.out.println("15. Logout");
+
             System.out.print("Enter option: ");
             int option = Integer.parseInt(userInp.readLine());
             this.sessionID = sessionID;
@@ -147,7 +148,7 @@ public class views {
 
 
     //This function is called when the admin wants to add a new account
-    void viewAddNewAccount() throws IOException{
+    void viewAddNewAccount() throws IOException {
         //Ask for values then test instantly
         //Ask for new account details
         //Loop until the signup is successful
@@ -278,25 +279,28 @@ public class views {
         String choice, productPrice, productQuantity, productName;
         //Ask for Products
         do {
-            do{
+            do {
                 System.out.print("Enter product name: ");
                 productName = userInp.readLine();
                 //Check if the input is alphanumeric
-                if (productHandler.testProductValues("productName", productName)) System.out.println("Product name only accepts alphanumeric characters!");
-            } while(productHandler.testProductValues("productName", productName));
+                if (productHandler.testProductValues("productName", productName))
+                    System.out.println("Product name only accepts alphanumeric characters!");
+            } while (productHandler.testProductValues("productName", productName));
 
             do {
                 System.out.print("Enter product price: ");
                 productPrice = userInp.readLine();
                 //Check if the input is numeric
-                if (productHandler.testProductValues("productPrice", productPrice)) System.out.println("Product price only accepts numeric characters!");
+                if (productHandler.testProductValues("productPrice", productPrice))
+                    System.out.println("Product price only accepts numeric characters!");
             } while (productHandler.testProductValues("productPrice", productPrice));
 
             do {
                 System.out.print("Current Stock: ");
                 productQuantity = userInp.readLine();
                 //Check if the input is numeric
-                if (productHandler.testProductValues("productQuantity", productQuantity)) System.out.println("Current Stock only accepts numeric characters!");
+                if (productHandler.testProductValues("productQuantity", productQuantity))
+                    System.out.println("Current Stock only accepts numeric characters!");
 
             } while (productHandler.testProductValues("productQuantity", productQuantity));
 
@@ -402,14 +406,16 @@ public class views {
                 System.out.print("Enter product ID: ");
                 productID = userInp.readLine();
                 //Check if the input is numeric
-                if (productHandler.testProductValues("productID", productID)) System.out.println("Product ID only accepts numeric characters!");
+                if (productHandler.testProductValues("productID", productID))
+                    System.out.println("Product ID only accepts numeric characters!");
             } while (productHandler.testProductValues("productID", productID));
 
             do {
                 System.out.print("Enter product quantity: ");
                 productQuantity = userInp.readLine();
                 //Check if the input is numeric
-                if (productHandler.testProductValues("productQuantity", productQuantity)) System.out.println("Product quantity only accepts numeric characters!");
+                if (productHandler.testProductValues("productQuantity", productQuantity))
+                    System.out.println("Product quantity only accepts numeric characters!");
             } while (productHandler.testProductValues("productQuantity", productQuantity));
 
 
@@ -436,7 +442,7 @@ public class views {
             transactionHandler.removeTransaction(String.valueOf(transactionStorage.transactionCount));
         }
     }
-    
+
     //View transactions
     void viewViewTransaction() throws IOException {
         transactionHandler.printALlTransactions();
@@ -461,7 +467,8 @@ public class views {
             System.out.println("Transaction not found!");
         }
     }
-    void viewSaveProduct()throws IOException{
+
+    void viewSaveProduct() throws IOException {
         String fileName = "Product";
         System.out.println();
 
@@ -470,7 +477,8 @@ public class views {
 
         System.out.println();
     }
-    void viewSaveAccount()throws IOException {
+
+    void viewSaveAccount() throws IOException {
         String fileName = "Account";
         System.out.println();
 
@@ -478,6 +486,7 @@ public class views {
         dataHandler.storeToFile(fileName, auth.listOfAccounts);
 
         System.out.println();
+
     }
 
     private void viewStoreItemsToFile() throws IOException {

@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.io.IOException;
+import java.awt.*;
+
 
 public class gui {
 
@@ -72,10 +74,11 @@ public class gui {
         panel.add(passwordField);
         panel.add(loginButton);
         panel.add(clearButton);
+        loginButton.setBackground(Color.pink);
+        clearButton.setBackground(Color.pink);
 
         //Add panel to frame
         frame.add(panel);
-
 
         //Frame Properties
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -88,7 +91,8 @@ public class gui {
 class guiOperations {
     private boolean status = true;
     public void changeView() {
-        //Change vieww
+        //Change view
+
     }
     public boolean getStatus() {
         return status;

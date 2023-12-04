@@ -64,6 +64,10 @@ public class transactionStorage {
                     double x = Double.parseDouble(productStorage.productList.get(i).get("productPrice")) * Double.parseDouble(productQuantities.get(j));
                     totalPrice += x;
                     itemsTotal.add(String.valueOf(x));
+                    productStorage.productList.get(i).put("productTotalSales", String.valueOf(Double.parseDouble(productStorage.productList.get(i).get("productTotalSales"))+x));
+
+                    int y = Integer.parseInt(productQuantities.get(j));
+                    productStorage.productList.get(i).put("productQuantity", String.valueOf(Integer.parseInt(productStorage.productList.get(i).get("productQuantity"))-y));
                 }
             }
         }
