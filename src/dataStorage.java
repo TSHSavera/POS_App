@@ -2,18 +2,22 @@ import java.io.*;
 import java.util.*;
 
 public class dataStorage {
-    //Store all data in a file
-    //JSON format
-    String json = "[";
     //JSON to ArrayList
     String line;
-    ArrayList<HashMap<String,String>> convertedJson = new ArrayList<>();
-    //Create a file - store the data in the file. A chain method of toJson() and storeToFile()
+    //Create a file - store the data in the file.
+    // A chain method of toJson() and storeToFile()
     //will be used to store the data in the file.
-    void storeToFile(String fileName) throws IOException {
+    void storeToFile (String fileName, ArrayList<HashMap<String, String>> listToSave) throws IOException {
         FileWriter fileWriter = new FileWriter(fileName);
+        StringBuilder listValues = new StringBuilder();
+        for (HashMap<String, String> pl: listToSave) {
+            for (String key: pl.keySet()) {
+                listValues.append(key).append("=").append(pl.get(key)).append(",");
+            }
+            listValues.append("#");
+        }
         try {
-            fileWriter.write(json);
+            fileWriter.write(listValues.toString());
             fileWriter.close();
         } catch (IOException e) {
             System.out.println("Failed to save file");
@@ -22,118 +26,69 @@ public class dataStorage {
 
     }
 
-    //Convert the data to JSON
-    public dataStorage toJson(ArrayList<HashMap<String, String>> data) {
-        StringBuilder json = new StringBuilder("[");
-        for (HashMap<String, String> x : data) {
-            json.append("{");
-            for (String key : x.keySet()) {
-                json.append("\"").append(key).append("\":\"").append(x.get(key)).append("\",");
-            }
-            json = new StringBuilder(json.substring(0, json.length() - 1));
-            json.append("},");
-        }
-        json = new StringBuilder(json.substring(0, json.length() - 1));
-        json.append("]");
-
-        return this;
-    }
-
-    //Read from the file
-    public dataStorage readJson(String jsonFile) throws IOException {
-        try {
-            //Store the data in a string
-            BufferedReader br = new BufferedReader(new FileReader(jsonFile));
-            line = br.readLine(); //remove [
-            //Traverse the file
-            while ((line = br.readLine()) != null) {
-                if (line.contains("}")) {
-                    HashMap<String, String> singleData = new HashMap<>();
-                    convertedJson.add(singleData);
-                } else {
-                    //Process JSON, remove unnecessary characters
-                    String[] keyValue = line.split("\",\"");
-
-                    String key = keyValue[0].replace("\"", "");
-                    String value = keyValue[1].replace("\"", "");
-                    value = value.replaceAll(",", "");
-
-                    //Get the latest HashMap in the ArrayList - Then put
-                    HashMap<String, String> currentMap = convertedJson.get(convertedJson.size() - 1);
-                    currentMap.put(key, value);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Failed to read file.");
-        }
-        return this;
-    }
-    //Override the data in the specific class
-    public void overrideAuthData() {
-        authOperations.listOfAccounts = convertedJson;
-    }
-
-    public void overrideProductData() {
-        productStorage.productList = convertedJson;
-    }
-
-    void storeToFile2(String fileName) throws IOException {
-        FileWriter fileWriter = new FileWriter(fileName);
-        try {
-            fileWriter.write(String.valueOf(productStorage.productList));
-            fileWriter.close();
-        } catch (IOException e) {
-            System.out.println("Failed to save file");
-        }
-        System.out.println("File saved successfully");
-
-    }
+    //Convert the data to my own format
     ArrayList<HashMap<String,String>> stringToMaps(String str){
         ArrayList<HashMap<String,String>> list = new ArrayList<>();
-
-        //Converter to remove brackets and braces
-        String var = str.replaceAll("/\\[/g", "");
-        var = var.replaceAll("/]/g", "");
-        var = var.replaceAll("/\\{/g", "");
-        //var = var.replace("}", "");
-
-        HashMap<String, String> a = new HashMap<>();
-        String[] maps = var.split("},");
-
-        for (String map: maps) {
-            String[] keyValues = var.split(",");
-
-            for (String kv : keyValues) {
-
+        //Get values from the string
+        String[] listValues = str.split(",#");
+        //Loop through the values
+        for (String lv: listValues) {
+            //Create a new HashMap
+            HashMap<String,String> map = new HashMap<>();
+            //Get the key-value pairs
+            String[] keyValues = lv.split(",");
+            //Loop through the key-value pairs
+            for (String kv: keyValues) {
+                //Split the key-value pairs
                 String[] split = kv.split("=");
+                //Get the key and value
                 String key = split[0].trim();
                 String value = split[1];
-
-                a.put(key, value);
+                //Put the key-value pair in the HashMap
+                map.put(key,value);
             }
-            list.add(a);
+            //Add the HashMap to the ArrayList
+            list.add(map);
         }
         return list;
     }
 
-    public void readJson2(String jsonFile) throws IOException {
+    //Read the file
+    public ArrayList<HashMap<String, String>> readSaveFile(String fiLeName) {
         try {
             //Store the data in a string
-            BufferedReader br = new BufferedReader(new FileReader(jsonFile));
-            line = br.readLine(); //remove [
-            System.out.println(line);
+            BufferedReader br = new BufferedReader(new FileReader(fiLeName));
+            line = br.readLine();
 
-            ArrayList<HashMap<String, String>> pList = new ArrayList<HashMap<String, String>>();
-            pList = stringToMaps(line);
-            System.out.println(pList);
-            productStorage.productList = pList;
-
-           // System.out.println(pList.get(0).get("productID"));
+            ArrayList<HashMap<String, String>> vList;
+            vList = stringToMaps(line);
+            return vList;
 
         } catch (IOException e) {
             System.out.println("Failed to read file.");
+            return null;
         }
     }
+
+    //Override the data in the specific class
+    public static void overrideAuthData(ArrayList<HashMap<String, String>> aList) {
+        try {
+            authOperations.listOfAccounts = aList;
+        } catch (NullPointerException e) {
+            System.out.println("Overriding Failed, loading default values.");
+        }
+    }
+
+    public static void overrideProductData(ArrayList<HashMap<String, String>> pList){
+        try {
+            productStorage.productList = pList;
+        } catch (NullPointerException e) {
+            System.out.println("Overriding Failed, loading default values.");
+        }
+    }
+
+
+
 
 
 }

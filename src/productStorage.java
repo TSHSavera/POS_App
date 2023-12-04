@@ -1,19 +1,22 @@
+import java.io.IOException;
 import java.util.*;
 public class productStorage {
+    //Data Storage
+    dataStorage dataHandler = new dataStorage();
     //Create a storage for each product
     static HashMap<String, String> productInstance = new HashMap<>();
 
     //Create a list of products
-    static ArrayList<HashMap<String, String>> productList = new ArrayList<HashMap<String, String>>();
-
-    //Total number of products
-    static int productCount = 0;
+    static ArrayList<HashMap<String, String>> productList = new ArrayList<>();
 
     //Temp storage for search queries
     static Map<String, String> searchInstance = new HashMap<>();
 
     //Instantiate the class
-    public productStorage() {
+    public productStorage() throws IOException {
+        System.out.println("Attempting to load saved products");
+        //Load the products from the file
+        dataStorage.overrideProductData(dataHandler.readSaveFile("Product"));
         if (productList.isEmpty()) {
             //Create sample products
             productInstance.put("productID", "1");
@@ -23,8 +26,6 @@ public class productStorage {
             productInstance.put("productTotalSales", "0");
             productInstance.put("productTotalProfit", "0");
             productList.add(productInstance);
-            productCount++;
-
         }
     }
 
@@ -46,7 +47,7 @@ public class productStorage {
         //Create a new product
         HashMap<String, String> newProduct = new HashMap<>();
         //Add the product details
-        newProduct.put("productID", String.valueOf(productCount + 1));
+        newProduct.put("productID", String.valueOf(productList.size() + 1));
         newProduct.put("productName", productName);
         newProduct.put("productPrice", productPrice);
         newProduct.put("productQuantity", productQuantity);
@@ -54,14 +55,12 @@ public class productStorage {
         newProduct.put("productTotalProfit", "0");
         //Add the product to the list
         productList.add(newProduct);
-        //Increment the product count
-        productCount++;
     }
 
     public productStorage searchProduct(String productID) {
         //Perform binary search for the product
         int first = 0;
-        int last = productCount - 1;
+        int last = productList.size() - 1;
         int mid = (first + last) / 2;
 
         while (last >= first) {
@@ -130,8 +129,6 @@ public class productStorage {
         }
         //Delete the product
         productList.remove(searchInstance);
-        //Decrement the product count
-        productCount--;
         return searchInstance.get("productID");
     }
 
@@ -153,8 +150,8 @@ public class productStorage {
         //Print the header
         System.out.println("Product ID\tProduct Name\tProduct Price\tProduct Quantity\tProduct Total Sales\tProduct Total Profit");
         //Print all products
-        for (int i = 0; i < productCount; i++) {
-            System.out.println(productList.get(i).get("productID") + "\t" + productList.get(i).get("productName") + "\t" + productList.get(i).get("productPrice") + "\t" + productList.get(i).get("productQuantity") + "\t" + productList.get(i).get("productTotalSales") + "\t" + productList.get(i).get("productTotalProfit"));
+        for (HashMap<String, String> stringStringHashMap : productList) {
+            System.out.println(stringStringHashMap.get("productID") + "\t" + stringStringHashMap.get("productName") + "\t" + stringStringHashMap.get("productPrice") + "\t" + stringStringHashMap.get("productQuantity") + "\t" + stringStringHashMap.get("productTotalSales") + "\t" + stringStringHashMap.get("productTotalProfit"));
         }
     }
 
@@ -163,6 +160,10 @@ public class productStorage {
 }
 
 class productTracker extends productStorage {
+
+    public productTracker() throws IOException {
+    }
+
     //Adjust the product quantity
     public boolean adjustProductQuantity(String productID, String quantity) {
         //Search for the product
@@ -183,8 +184,8 @@ class productTracker extends productStorage {
         //Print the header
         System.out.println("Product ID\tProduct Name\tProduct Quantity");
         //Print all products
-        for (int i = 0; i < productCount; i++) {
-            System.out.println(productList.get(i).get("productID") + "\t" + productList.get(i).get("productName") + "\t" + productList.get(i).get("productQuantity"));
+        for (HashMap<String, String> stringStringHashMap : productList) {
+            System.out.println(stringStringHashMap.get("productID") + "\t" + stringStringHashMap.get("productName") + "\t" + stringStringHashMap.get("productQuantity"));
         }
     }
 

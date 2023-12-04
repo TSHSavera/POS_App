@@ -112,9 +112,6 @@ public class views {
                 authOperations.logout();
                 status = false;
                 break;
-            case 16:
-                viewReadFile();
-                break;
             default:
                 System.out.println("Error: Invalid argument for 'option' was passed. - " + option);
                 break;
@@ -436,7 +433,7 @@ public class views {
     }
     
     //View transactions
-    void viewViewTransaction() {
+    void viewViewTransaction() throws IOException {
         transactionHandler.printALlTransactions();
     }
 
@@ -460,28 +457,21 @@ public class views {
         }
     }
     void viewSaveProduct()throws IOException{
-        String fileName = "Product.json";
+        String fileName = "Product";
         System.out.println();
 
-        //Converts Product list data to Json
-        dataHandler.toJson(productStorage.productList);
+        //Converts Product list data to some format - then save
+        dataHandler.storeToFile(fileName, productStorage.productList);
 
-        //Storing the file
-        dataHandler.storeToFile2(fileName);
         System.out.println();
     }
     void viewSaveAccount()throws IOException {
-        String fileName = "Account.json";
+        String fileName = "Account";
         System.out.println();
 
         //Converts Account list data to json
-        dataHandler.toJson(authHandler.listOfAccounts);
+        dataHandler.storeToFile(fileName, auth.listOfAccounts);
 
-        dataHandler.storeToFile(fileName);
         System.out.println();
-    }
-    void viewReadFile()throws IOException{
-        String fileName = "Product.json";
-        dataHandler.readJson2(fileName);
     }
 }
