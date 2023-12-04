@@ -19,7 +19,7 @@ public class views {
     //Initialize a new account array
     String[] newAccount = new String[5];
 
-    int option, option1;
+    int option, option1, accountNumber;
 
     views(String sessionID) throws IOException {
         //Retrieve account data
@@ -82,16 +82,16 @@ public class views {
                     System.out.print("Enter option: ");
                     option1 = Integer.parseInt(userInp.readLine());
 
-                    if (option < 1 || option > 18) {
+                    if (option1 < 1 || option1 > 7) {
                         System.out.println("\nInvalid input range. Please enter a valid option!\n");
                     }
                 } catch(NumberFormatException e){
                     System.out.println("\nPlease enter a valid option!\n");
                 }
-            } while (option < 1 || option > 18);
+            } while (option1 < 1 || option1 > 7);
 
             this.sessionID = sessionID;
-            cashierOps(option);
+            cashierOps(option1);
         }
     }
 
@@ -283,25 +283,35 @@ public class views {
         ArrayList<HashMap<String, String>> allAccounts = authHandler.retrieveAllAccounts(sessionID);
 
         //Ask for the account to change
-        int accountNumber;
         do {
-            System.out.print("Enter the account number to change: ");
-            accountNumber = Integer.parseInt(userInp.readLine());
-            if (accountNumber > allAccounts.size()) {
-                System.out.println("Out of bounds! Please enter a valid account number.");
+            try {
+                System.out.print("Enter the account number to change: ");
+                accountNumber = Integer.parseInt(userInp.readLine());
+
+                if (accountNumber > allAccounts.size()) {
+                    System.out.println("Out of bounds! Please enter a valid account number.");
+                }
+            }catch (NumberFormatException e){
+                System.out.println("Invalid input!");
             }
         } while (accountNumber > allAccounts.size());
 
 
         //Ask what to change
-        System.out.println("What do you want to change?");
-        System.out.println("1. Username");
-        System.out.println("2. Password");
-        System.out.println("3. First Name");
-        System.out.println("4. Last Name");
-        System.out.println("5. Account Type");
-        System.out.print("Enter option: ");
-        int option = Integer.parseInt(userInp.readLine());
+        do {
+            try {
+                System.out.println("What do you want to change?");
+                System.out.println("1. Username");
+                System.out.println("2. Password");
+                System.out.println("3. First Name");
+                System.out.println("4. Last Name");
+                System.out.println("5. Account Type");
+                System.out.print("Enter option: ");
+                int option = Integer.parseInt(userInp.readLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Input!");
+            }
+        }while(option < 1 || option > 5);
 
         //Change the option to key
         String key = switch (option) {
