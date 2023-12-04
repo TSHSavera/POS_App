@@ -28,6 +28,9 @@ public class dataStorage {
 
     //Convert the data to my own format
     ArrayList<HashMap<String,String>> stringToMaps(String str){
+        if (str == null) {
+            return null;
+        }
         ArrayList<HashMap<String,String>> list = new ArrayList<>();
         //Get values from the string
         String[] listValues = str.split(",#");
@@ -108,25 +111,29 @@ public class dataStorage {
     }
 
     ArrayList<HashMap<String, ArrayList<String>>> stringToItemsMaps(String items) {
+        if (items == null) {
+            return null;
+        }
         ArrayList<HashMap<String,ArrayList<String>>> list = new ArrayList<>();
         //Get values from the string
-        String[] listValues = items.split("~#");
+        String[] listValues = items.split("#");
         //Loop through the values
         for (String lv: listValues) {
             //Create a new HashMap
             HashMap<String,ArrayList<String>> map = new HashMap<>();
             //Get the key-value pairs
-            String[] keyValues = lv.split("~");
+            String[] keyValues = lv.split("]~");
             //Loop through the key-value pairs
             for (String kv: keyValues) {
                 //Split the key-value pairs
-                String[] split = kv.split("=");
+                String[] split = kv.split("=\\[");
                 //Get the key and value
                 String key = split[0].trim();
                 //Process Array of Data
                 String value = split[1];
+                System.out.println(value);
                 //Split the value of the key
-                String[] valueArray = value.split(",");
+                String[] valueArray = value.split(", ");
                 //Add the value to the ArrayList
                 ArrayList<String> valuesArray = new ArrayList<>(Arrays.asList(valueArray));
                 

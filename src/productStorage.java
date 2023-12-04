@@ -12,7 +12,8 @@ public class productStorage {
     //Instantiate the class
     public productStorage() {
         if (productList == null || productList.isEmpty()) {
-
+            //Re-instantiate the class
+            productList = new ArrayList<>();
             //Create sample products
             productInstance.put("productID", "1");
             productInstance.put("productName", "Sample Product 1");
@@ -61,11 +62,16 @@ public class productStorage {
         int last = productList.size() - 1;
         int mid = (first + last) / 2;
 
+        //Remove the brackets from the productID - if it has any
+        String trimmedPID = productID.replaceAll("\\[", "");
+        trimmedPID = trimmedPID.replaceAll("\\]", "");
+
+
         while (last >= first) {
-            if (Objects.equals(productID, productList.get(mid).get("productID"))) {
+            if (Objects.equals(trimmedPID, productList.get(mid).get("productID"))) {
                 searchInstance = productList.get(mid);
                 return this;
-            } else if (Integer.parseInt(productID) > Integer.parseInt(productList.get(mid).get("productID"))) {
+            } else if (Integer.parseInt(trimmedPID) > Integer.parseInt(productList.get(mid).get("productID"))) {
                 first = mid + 1;
             } else {
                 last = mid - 1;
