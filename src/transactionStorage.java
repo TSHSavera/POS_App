@@ -1,10 +1,11 @@
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
 public class transactionStorage {
     //Create a storage for each transaction
     static ArrayList<HashMap<String, String>> transactionStorage = new ArrayList<>();
     //Create a list of items in transaction
-    static ArrayList<HashMap<String, ArrayList<String>>> itemsList = new ArrayList<HashMap<String, ArrayList<String>>>();
+    static ArrayList<HashMap<String, ArrayList<String>>> itemsList = new ArrayList<>();
     //Total number of transactions
     static int transactionCount = 0;
     //Total price temp handler
@@ -83,7 +84,7 @@ public class transactionStorage {
     }
 
     //Print all transactions
-    public void printALlTransactions() {
+    public void printALlTransactions() throws IOException {
         productStorage productHandler = new productStorage();
         for (int i = 0; i < transactionStorage.size(); i++) {
             System.out.println("Transaction ID: " + transactionStorage.get(i).get("ID"));
@@ -126,7 +127,7 @@ public class transactionStorage {
         for (HashMap<String, String> stringStringHashMap : transactionStorage) {
             if (stringStringHashMap.get("ID").equals(transactionID)) {
                 itemsList.remove(stringStringHashMap.get("itemsIndex"));
-                boolean remove = transactionStorage.remove(stringStringHashMap);
+                transactionStorage.remove(stringStringHashMap);
 
                 transactionCount--;
                 return;
