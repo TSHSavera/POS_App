@@ -131,7 +131,6 @@ public class dataStorage {
                 String key = split[0].trim();
                 //Process Array of Data
                 String value = split[1];
-                System.out.println(value);
                 //Split the value of the key
                 String[] valueArray = value.split(", ");
                 //Add the value to the ArrayList
