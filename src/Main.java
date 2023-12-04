@@ -10,7 +10,7 @@ public class Main {
 
         //Initialize Variable Handlers
         String inputUsername, inputPassword;
-        String sessionID;
+        String sessionID = null;
 
         //Create Inputs, Initialize Classes
         BufferedReader userInp = new BufferedReader(new InputStreamReader(System.in));
@@ -20,13 +20,23 @@ public class Main {
         do {
             //Ask if the user wants to log in or exit the program
             System.out.println("Welcome to POS! What would you like to do next?: ");
-            System.out.println("1. Login");
-            System.out.println("2. Exit");
+            System.out.println("1. Login on Console");
+            System.out.println("2. Login on GUI");
+            System.out.println("3. Exit");
             System.out.print("Enter option: ");
             int option = Integer.parseInt(userInp.readLine());
             if (option == 2) {
+                gui guiHandler = new gui();
+                System.out.println("Press enter to terminate the application.");
+                if (System.in.read() != 0) {
+                    System.exit(0);
+                }
+            } else if (option == 3) {
                 System.out.println("Program exits.");
                 System.exit(0);
+            } else if (option != 1) {
+                System.out.println("Invalid option!");
+                continue;
             }
 
             //Ask for username and password
