@@ -41,7 +41,7 @@ public class transactionStorage {
             transactionInstance.put("ID", "1");
             transactionInstance.put("Timestamp", String.valueOf(new Timestamp(System.currentTimeMillis())));
             transactionInstance.put("Total", String.valueOf(totalPrice));
-            transactionInstance.put("itemsIndex", String.valueOf(transactionCount));
+            transactionInstance.put("itemsIndex", String.valueOf(transactionStorage.size()));
             transactionStorage.add(transactionInstance);
 
 
@@ -49,7 +49,6 @@ public class transactionStorage {
             itemsInstance.put("itemQuantity", itemQuantity);
             itemsInstance.put("itemTotal", itemsTotal);
             itemsList.add(itemsInstance);
-            transactionCount++;
         }
     }
 
@@ -82,12 +81,11 @@ public class transactionStorage {
     public void addNewTransaction() {
         //Create sample transactions
         HashMap<String, String> transactionInstance = new HashMap<>();
-        transactionInstance.put("ID", String.valueOf(transactionCount + 1));
+        transactionInstance.put("ID", String.valueOf(transactionStorage.size() + 1));
         transactionInstance.put("Timestamp", String.valueOf(new Timestamp(System.currentTimeMillis())));
         transactionInstance.put("Total", String.valueOf(totalPrice));
-        transactionInstance.put("itemsIndex", String.valueOf(transactionCount));
+        transactionInstance.put("itemsIndex", String.valueOf(transactionStorage.size()));
         transactionStorage.add(transactionInstance);
-        transactionCount++;
         totalPrice = 0;
     }
 
@@ -111,14 +109,14 @@ public class transactionStorage {
 
     //Print the transaction details
     public void printTransactionDetails() {
-        System.out.println("Transaction ID: " + transactionStorage.get(transactionCount-1).get("ID"));
-        System.out.println("Timestamp: " + transactionStorage.get(transactionCount-1).get("Timestamp"));
-        System.out.println("Total: " + transactionStorage.get(transactionCount-1).get("Total"));
+        System.out.println("Transaction ID: " + transactionStorage.get(transactionStorage.size()-1).get("ID"));
+        System.out.println("Timestamp: " + transactionStorage.get(transactionStorage.size()-1).get("Timestamp"));
+        System.out.println("Total: " + transactionStorage.get(transactionStorage.size()-1).get("Total"));
         System.out.println("Items: ");
-        for (int j = 0; j < itemsList.get(transactionCount-1).get("itemID").size(); j++) {
-            System.out.println("Item ID: " + itemsList.get(transactionCount-1).get("itemID").get(j));
-            System.out.println("Item Quantity: " + itemsList.get(transactionCount-1).get("itemQuantity").get(j));
-            System.out.println("Item Total: " + itemsList.get(transactionCount-1).get("itemTotal").get(j));
+        for (int j = 0; j < itemsList.get(transactionStorage.size()-1).get("itemID").size(); j++) {
+            System.out.println("Item ID: " + itemsList.get(transactionStorage.size()-1).get("itemID").get(j));
+            System.out.println("Item Quantity: " + itemsList.get(transactionStorage.size()-1).get("itemQuantity").get(j));
+            System.out.println("Item Total: " + itemsList.get(transactionStorage.size()-1).get("itemTotal").get(j));
         }
         System.out.println();
     }
@@ -127,7 +125,6 @@ public class transactionStorage {
     public void removeTransaction() {
             itemsList.remove(searchResults.get("itemsIndex"));
             transactionStorage.remove(searchResults);
-            transactionCount--;
     }
 
     //Remove the transaction
@@ -137,7 +134,6 @@ public class transactionStorage {
                 itemsList.remove(stringStringHashMap.get("itemsIndex"));
                 transactionStorage.remove(stringStringHashMap);
 
-                transactionCount--;
                 return;
             }
         }

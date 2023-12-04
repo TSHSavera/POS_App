@@ -23,6 +23,7 @@ public class views {
     views(String sessionID) throws IOException {
         //Retrieve account data
         Map<String, String> accountData = authOperations.retrieveCurrentUser(sessionID);
+
         //Check the account type
         if (Objects.requireNonNull(accountData).get("accountType").equalsIgnoreCase("A")) {
             System.out.println("Welcome Admin " + accountData.get("firstName"));
@@ -430,9 +431,15 @@ public class views {
                 System.out.print("Enter product ID: ");
                 productID = userInp.readLine();
                 //Check if the input is numeric
-                if (productHandler.testProductValues("productID", productID))
+                if (productHandler.testProductValues("productID", productID)) {
                     System.out.println("Product ID only accepts numeric characters!");
-            } while (productHandler.testProductValues("productID", productID));
+                } else {
+                    //Check if the product exists
+                    if (productHandler.searchProduct(productID) == null) {
+                        System.out.println("Product not found!");
+                    }
+                };
+            } while (productHandler.testProductValues("productID", productID) && productHandler.searchProduct(productID) != null);
 
             do {
                 System.out.print("Enter product quantity: ");
@@ -463,7 +470,7 @@ public class views {
             System.out.println("Transaction created successfully!");
         } else {
             System.out.println("Transaction cancelled!");
-            transactionHandler.removeTransaction(String.valueOf(transactionStorage.transactionCount));
+            transactionHandler.removeTransaction(String.valueOf(transactionStorage.transactionStorage.size()));
         }
     }
 
