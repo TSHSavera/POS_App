@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import java.text.DecimalFormat;
 
 //package src;
 public class views {
@@ -35,12 +36,13 @@ public class views {
             System.out.println("7. View product list");
             System.out.println("8. Change product details");
             System.out.println("9. Search product");
-            System.out.println("10. Create new transaction");
-            System.out.println("11. View transactions");
-            System.out.println("12. Remove transaction");
-            System.out.println("13. Save Product File");
-            System.out.println("14. Save Account File");
-            System.out.println("15. Logout");
+            System.out.println("10. Get the product price");
+            System.out.println("11. Create new transaction");
+            System.out.println("12. View transactions");
+            System.out.println("13. Remove transaction");
+            System.out.println("14. Save Product File");
+            System.out.println("15. Save Account File");
+            System.out.println("16. Logout");
 
             System.out.print("Enter option: ");
             int option = Integer.parseInt(userInp.readLine());
@@ -53,7 +55,9 @@ public class views {
             System.out.println("1. Create new transaction");
             System.out.println("2. View transactions");
             System.out.println("3. Search product");
-            System.out.println("4. Logout");
+            System.out.println("4. Get the product price");
+            System.out.println("5. Get product quantity");
+            System.out.println("6. Logout");
             System.out.print("Enter option: ");
             int option = Integer.parseInt(userInp.readLine());
             this.sessionID = sessionID;
@@ -95,26 +99,29 @@ public class views {
                 viewSearchProduct();
                 break;
             case 10:
-                viewCreateNewTransaction();
+                viewGetPrice();
                 break;
             case 11:
-                viewViewTransaction();
+                viewCreateNewTransaction();
                 break;
             case 12:
-                viewRemoveTransaction();
+                viewViewTransaction();
                 break;
             case 13:
-                viewSaveProduct();
+                viewRemoveTransaction();
                 break;
             case 14:
-                viewSaveAccount();
+                viewSaveProduct();
                 break;
             case 15:
+                viewSaveAccount();
+                break;
+            case 16:
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
                 break;
-            case 16:
+            case 17:
                 viewStoreItemsToFile();
                 break;
             default:
@@ -136,6 +143,12 @@ public class views {
                 viewSearchProduct();
                 break;
             case 4:
+                viewGetPrice();
+                break;
+            case 5:
+                productHandler.getProductQuantity();
+                break;
+            case 6:
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
@@ -321,7 +334,7 @@ public class views {
         //Delete the product
         String deleteProduct;
         try {
-            deleteProduct = productHandler.searchProduct(productID).getProductName();
+            deleteProduct = productHandler.searchProduct(productID).deleteProduct();
         } catch (NullPointerException e) {
             System.out.println("Product not found!");
             return;
@@ -497,5 +510,24 @@ public class views {
         dataHandler.storeToItemsFile(fileName, transactionStorage.itemsList);
 
         System.out.println();
+    }
+    void viewGetPrice()throws IOException{
+        String productID;
+
+        do {
+            System.out.print("Enter product ID: ");
+            productID = userInp.readLine();
+            //Check if the input is numeric
+            if (productHandler.testProductValues("productID", productID))
+                System.out.println("Product ID only accepts numeric characters!");
+        } while (productHandler.testProductValues("productID", productID));
+
+        double pPrice;
+        try {
+            pPrice = (productHandler.searchProduct(productID).getProductPrice());
+            System.out.println("\nPrice of an item: "+new DecimalFormat("#.##").format(pPrice)+"\n");
+        } catch (NullPointerException e) {
+            System.out.println("Product not found!");
+        }
     }
 }

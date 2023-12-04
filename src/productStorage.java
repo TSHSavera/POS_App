@@ -29,8 +29,11 @@ public class productStorage {
         if (value == null) return true;
         return !switch (type) {
             //Check if the value is a number
-            case "productID", "productPrice", "productQuantity", "productTotalSales", "productTotalProfit" ->
+            case "productID", "productQuantity" ->
                     value.matches("[0-9]+");
+            //
+            case "productPrice", "productTotalSales" ->
+                value.matches("[0-9.]+");
             //Check if the value is an alphanumeric string
             case "productName" -> value.matches("[a-zA-Z0-9 ]+");
             default -> false;
@@ -149,8 +152,6 @@ public class productStorage {
             System.out.println(stringStringHashMap.get("productID") + "\t" + stringStringHashMap.get("productName") + "\t" + stringStringHashMap.get("productPrice") + "\t" + stringStringHashMap.get("productQuantity") + "\t" + stringStringHashMap.get("productTotalSales") + "\t" + stringStringHashMap.get("productTotalProfit"));
         }
     }
-
-
 
 }
 
