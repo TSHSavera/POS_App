@@ -152,26 +152,6 @@ public class productStorage {
             System.out.println(stringStringHashMap.get("productID") + "\t" + stringStringHashMap.get("productName") + "\t" + stringStringHashMap.get("productPrice") + "\t" + stringStringHashMap.get("productQuantity") + "\t" + stringStringHashMap.get("productTotalSales") + "\t" + stringStringHashMap.get("productTotalProfit"));
         }
     }
-
-}
-
-class productTracker extends productStorage {
-    //Adjust the product quantity
-    public boolean adjustProductQuantity(String productID, String quantity) {
-        //Search for the product
-        productStorage product = searchProduct(productID);
-        //If the product is not found, return false
-        if (product == null) return false;
-        //Get the current quantity
-        int currentQuantity = Integer.parseInt(searchInstance.get("productQuantity"));
-        //Get the new quantity
-        int newQuantity = currentQuantity + Integer.parseInt(quantity);
-        //Change the product quantity
-        changeProductDetails("productQuantity", String.valueOf(newQuantity));
-        return true;
-    }
-
-    //Show current product quantity of all products
     public void showProductQuantity() {
         //Print the header
         System.out.println("Product ID\tProduct Name\tProduct Quantity");
@@ -181,6 +161,6 @@ class productTracker extends productStorage {
         }
     }
 
-
-
 }
+
+

@@ -43,7 +43,8 @@ public class views {
             System.out.println("14. Save Product File");
             System.out.println("15. Save Account File");
             System.out.println("16. Save Transaction File");
-            System.out.println("17. Logout");
+            System.out.println("17. Show the quantity of all products");
+            System.out.println("18. Logout");
 
             System.out.print("Enter option: ");
             int option = Integer.parseInt(userInp.readLine());
@@ -58,7 +59,8 @@ public class views {
             System.out.println("3. Search product");
             System.out.println("4. Get the product price");
             System.out.println("5. Get product quantity");
-            System.out.println("6. Logout");
+            System.out.println("6. Show the quantity of all products");
+            System.out.println("7. Logout");
             System.out.print("Enter option: ");
             int option = Integer.parseInt(userInp.readLine());
             this.sessionID = sessionID;
@@ -121,6 +123,9 @@ public class views {
                 viewSaveTransaction();
                 break;
             case 17:
+                productHandler.showProductQuantity();
+                break;
+            case 18:
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
@@ -534,4 +539,5 @@ public class views {
             System.out.println("Product not found!");
         }
     }
+
 }
