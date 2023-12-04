@@ -70,18 +70,46 @@ public class dataStorage {
         }
     }
 
+    //For Items List
+    void storeToItemsFile (String fileName, ArrayList<HashMap<String, ArrayList<String>>> listToSave) throws IOException {
+        FileWriter fileWriter = new FileWriter(fileName);
+        StringBuilder listValues = new StringBuilder();
+        for (HashMap<String, ArrayList<String>> pl: listToSave) {
+            for (String key: pl.keySet()) {
+                listValues.append(key).append("=").append(pl.get(key)).append(",");
+            }
+            listValues.append("#");
+        }
+        try {
+            fileWriter.write(listValues.toString());
+            fileWriter.close();
+        } catch (IOException e) {
+            System.out.println("Failed to save file");
+        }
+        System.out.println("File saved successfully");
+
+    }
+
     //Override the data in the specific class
     public static void overrideAuthData(ArrayList<HashMap<String, String>> aList) {
         try {
             authOperations.listOfAccounts = aList;
         } catch (NullPointerException e) {
-            System.out.println("Overriding Failed, loading default values.");
+            System.out.println("Overriding Failed!");
         }
     }
 
     public static void overrideProductData(ArrayList<HashMap<String, String>> pList){
         try {
             productStorage.productList = pList;
+        } catch (NullPointerException e) {
+            System.out.println("Overriding Failed!");
+        }
+    }
+
+    public static void overrideTransactionData(ArrayList<HashMap<String, String>> tList){
+        try {
+            transactionStorage.transactionStorage = tList;
         } catch (NullPointerException e) {
             System.out.println("Overriding Failed, loading default values.");
         }

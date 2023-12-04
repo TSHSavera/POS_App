@@ -3,6 +3,7 @@ import java.sql.Timestamp;
 import java.util.*;
 public class transactionStorage {
     //Create a storage for each transaction
+    dataStorage dataHandler = new dataStorage();
     static ArrayList<HashMap<String, String>> transactionStorage = new ArrayList<>();
     //Create a list of items in transaction
     static ArrayList<HashMap<String, ArrayList<String>>> itemsList = new ArrayList<>();
@@ -15,7 +16,9 @@ public class transactionStorage {
 
     //Instantiate the class
     public transactionStorage() {
-        if (transactionStorage.isEmpty()) {
+        if (transactionStorage == null || transactionStorage.isEmpty()) {
+            //Re-instantiate the class
+            transactionStorage = new ArrayList<>();
             double totalPrice = 0;
             //Add items
             HashMap<String, ArrayList<String>> itemsInstance = new HashMap<>();

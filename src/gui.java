@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.io.IOException;
+
 public class gui {
 
     JFrame frame;
@@ -33,9 +35,14 @@ public class gui {
             String password = String.valueOf(passwordField.getPassword());
 
             //Perform login
-            authOperations authHandler = new authOperations();
+            authOperations authHandler;
+            try {
+                authHandler = new authOperations();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
             guiOperations guiHandler = new guiOperations();
-            String sessionID = null;
+            String sessionID;
 
             do {
                 sessionID = authHandler.login(username, password);
@@ -57,7 +64,7 @@ public class gui {
                         System.exit(0);
                     }
                 }
-            } while (!authHandler.sessionCheck(sessionID));
+            } while (authHandler.sessionCheck(sessionID));
         });
 
         //Add components to panel

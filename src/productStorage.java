@@ -1,8 +1,5 @@
-import java.io.IOException;
 import java.util.*;
 public class productStorage {
-    //Data Storage
-    dataStorage dataHandler = new dataStorage();
     //Create a storage for each product
     static HashMap<String, String> productInstance = new HashMap<>();
 
@@ -13,11 +10,9 @@ public class productStorage {
     static Map<String, String> searchInstance = new HashMap<>();
 
     //Instantiate the class
-    public productStorage() throws IOException {
-        System.out.println("Attempting to load saved products");
-        //Load the products from the file
-        dataStorage.overrideProductData(dataHandler.readSaveFile("Product"));
-        if (productList.isEmpty()) {
+    public productStorage() {
+        if (productList == null || productList.isEmpty()) {
+
             //Create sample products
             productInstance.put("productID", "1");
             productInstance.put("productName", "Sample Product 1");
@@ -160,10 +155,6 @@ public class productStorage {
 }
 
 class productTracker extends productStorage {
-
-    public productTracker() throws IOException {
-    }
-
     //Adjust the product quantity
     public boolean adjustProductQuantity(String productID, String quantity) {
         //Search for the product

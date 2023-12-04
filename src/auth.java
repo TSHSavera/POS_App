@@ -34,8 +34,6 @@ import java.util.*;
 
 public class auth {
 
-    //Override the data storage
-    dataStorage dataHandler = new dataStorage();
     //Create a storage for each account credential
     static HashMap<String, String> account = new HashMap<>();
 
@@ -44,12 +42,10 @@ public class auth {
 
 
     //Instantiate the class
-    public auth() throws IOException {
-        System.out.println("Attempting to load saved accounts");
-        //Load saved file
-        dataStorage.overrideAuthData(dataHandler.readSaveFile("Account"));
+    public auth() {
         //If the admin is not yet initialized, initialize it
-        if (listOfAccounts.isEmpty()) {
+        if (listOfAccounts == null || listOfAccounts.isEmpty()) {
+            listOfAccounts = new ArrayList<>();
             //Initialize the admin accounts
             account.put("username", "admin");
             account.put("password", "admin");
@@ -205,7 +201,6 @@ class authOperations extends auth {
             return account;
         }
         System.out.println("Error: Session ID doesn't match!");
-        //TODO: Logout the user
         logout();
         return null;
     }
@@ -284,9 +279,9 @@ class authOperations extends auth {
     boolean sessionCheck(String sid) {
         //Check if null
         if (sid == null) {
-            return false;
+            return true;
         }
-        return sid.equals(sessionID);
+        return !sid.equals(sessionID);
     }
 
     //Logout

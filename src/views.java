@@ -18,6 +18,7 @@ public class views {
     //Initialize a new account array
     String[] newAccount = new String[5];
 
+
     views(String sessionID) throws IOException {
         //Retrieve account data
         Map<String, String> accountData = authOperations.retrieveCurrentUser(sessionID);
@@ -112,11 +113,15 @@ public class views {
                 authOperations.logout();
                 status = false;
                 break;
+            case 16:
+                viewStoreItemsToFile();
+                break;
             default:
                 System.out.println("Error: Invalid argument for 'option' was passed. - " + option);
                 break;
         }
     }
+
 
     public void cashierOps(int option) throws IOException {
         switch (option) {
@@ -471,6 +476,16 @@ public class views {
 
         //Converts Account list data to json
         dataHandler.storeToFile(fileName, auth.listOfAccounts);
+
+        System.out.println();
+    }
+
+    private void viewStoreItemsToFile() throws IOException {
+        String fileName = "TransactionItems";
+        System.out.println();
+
+        //Converts Transaction list data to json
+        dataHandler.storeToItemsFile(fileName, transactionStorage.itemsList);
 
         System.out.println();
     }

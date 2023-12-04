@@ -6,7 +6,19 @@ import java.io.InputStreamReader;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        //Initialize Data Storage
+        dataStorage dataHandler = new dataStorage();
 
+        //Attempt to load saved data'
+        System.out.println("Attempting to load saved data (1/4)");
+        //Load the transactions from the file
+        dataStorage.overrideTransactionData( dataHandler.readSaveFile("Transaction"));
+        System.out.println("Attempting to load saved data (2/4)");
+        //Load the products from the file
+        dataStorage.overrideProductData(dataHandler.readSaveFile("Product"));
+        System.out.println("Attempting to load saved data (3/4)");
+        //Load the users from the file
+        dataStorage.overrideAuthData(dataHandler.readSaveFile("Account"));
 
         //Initialize Variable Handlers
         String inputUsername, inputPassword;
@@ -66,7 +78,7 @@ public class Main {
                 }
 
             }
-        } while (!authHandler.sessionCheck(sessionID));
+        } while (authHandler.sessionCheck(sessionID));
         System.out.println("Program exits.");
     }
 }
