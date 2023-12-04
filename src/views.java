@@ -10,6 +10,8 @@ public class views {
     BufferedReader userInp = new BufferedReader(new InputStreamReader(System.in));
     authOperations authHandler = new authOperations();
     productStorage productHandler = new productStorage();
+    //Create a new transaction
+    transactionStorage transactionHandler = new transactionStorage();
 
     //Initialize a new account array
     String[] newAccount = new String[5];
@@ -18,7 +20,7 @@ public class views {
         //Retrieve account data
         Map<String, String> accountData = authOperations.retrieveCurrentUser(sessionID);
         //Check the account type
-        if (Objects.requireNonNull(accountData).get("accountType").equals("A")) {
+        if (Objects.requireNonNull(accountData).get("accountType").equalsIgnoreCase("A")) {
             System.out.println("Welcome Admin " + accountData.get("firstName"));
             System.out.println("Please select an option: ");
             System.out.println("1. Add new account");
@@ -30,16 +32,19 @@ public class views {
             System.out.println("7. View product list");
             System.out.println("8. Change product details");
             System.out.println("9. Search product");
-            System.out.println("10. Logout");
+            System.out.println("10. Create new transaction");
+            System.out.println("11. View transactions");
+            System.out.println("12. Remove transaction");
+            System.out.println("13. Logout");
             System.out.print("Enter option: ");
             int option = Integer.parseInt(userInp.readLine());
             this.sessionID = sessionID;
             adminOps(option);
         }
-        if (accountData.get("accountType").equals("C")) {
+        if (accountData.get("accountType").equalsIgnoreCase("C")) {
             System.out.println("Welcome Cashier " + accountData.get("username"));
             System.out.println("Please select an option: ");
-            System.out.println("1. Create new transactionStorage");
+            System.out.println("1. Create new transaction");
             System.out.println("2. View transactions");
             System.out.println("3. Search product");
             System.out.println("4. Logout");
@@ -84,24 +89,37 @@ public class views {
                 viewSearchProduct();
                 break;
             case 10:
+                viewCreateNewTransaction();
+                break;
+            case 11:
+                viewViewTransaction();
+                break;
+            case 12:
+                viewRemoveTransaction();
+                break;
+            case 13:
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
                 break;
             default:
-                throw new IllegalArgumentException("Error: Invalid argument for 'option' was passed. - " + option);
+                System.out.println("Error: Invalid argument for 'option' was passed. - " + option);
+                break;
         }
     }
 
-    public void cashierOps(int option) {
+    public void cashierOps(int option) throws IOException {
         switch (option) {
             case 1:
-                System.out.println("Create new transactionStorage");
+                viewCreateNewTransaction();
                 break;
             case 2:
-                System.out.println("View transactions");
+                viewViewTransaction();
                 break;
             case 3:
+                viewSearchProduct();
+                break;
+            case 4:
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
@@ -353,4 +371,78 @@ public class views {
         }
     }
 
+    //Create new transaction
+    void viewCreateNewTransaction() throws IOException {
+        //Initialize variables
+        String productID, productQuantity;
+        String choice;
+        //Create ArrayList of product IDs and quantities
+        ArrayList<String> productIDs = new ArrayList<>();
+        ArrayList<String> productQuantities = new ArrayList<>();
+
+        //Ask for Products
+        do {
+            do {
+                System.out.print("Enter product ID: ");
+                productID = userInp.readLine();
+                //Check if the input is numeric
+                if (productHandler.testProductValues("productID", productID)) System.out.println("Product ID only accepts numeric characters!");
+            } while (productHandler.testProductValues("productID", productID));
+
+            do {
+                System.out.print("Enter product quantity: ");
+                productQuantity = userInp.readLine();
+                //Check if the input is numeric
+                if (productHandler.testProductValues("productQuantity", productQuantity)) System.out.println("Product quantity only accepts numeric characters!");
+            } while (productHandler.testProductValues("productQuantity", productQuantity));
+
+
+            productIDs.add(productID);
+            productQuantities.add(productQuantity);
+
+            System.out.print("Do you want to add another product? y/n: ");
+            choice = userInp.readLine();
+
+        } while (choice.equalsIgnoreCase("y"));
+        //Add the products to the transaction
+        transactionHandler.addNewItems(productIDs, productQuantities);
+        //Create a new transaction
+        transactionHandler.addNewTransaction();
+        //Print the transaction
+        transactionHandler.printTransactionDetails();
+        //Ask if the transaction is final
+        System.out.print("Would you like to save this transaction? y/n: ");
+        choice = userInp.readLine();
+        if (choice.equalsIgnoreCase("y")) {
+            System.out.println("Transaction created successfully!");
+        } else {
+            System.out.println("Transaction cancelled!");
+            transactionHandler.removeTransaction(String.valueOf(transactionStorage.transactionCount));
+        }
+    }
+    
+    //View transactions
+    void viewViewTransaction() {
+        transactionHandler.printALlTransactions();
+    }
+
+    //Remove transaction
+    void viewRemoveTransaction() throws IOException {
+        //Ask for the transaction ID - loop until the transaction is found
+        String transactionID;
+        do {
+            System.out.print("Enter the transaction ID to remove: ");
+            transactionID = userInp.readLine();
+            if (transactionHandler.searchTransaction(transactionID) == null) {
+                System.out.println("Transaction not found!");
+            }
+        } while (transactionHandler.searchTransaction(transactionID) == null);
+        //Remove the transaction
+        try {
+            transactionHandler.removeTransaction(transactionID);
+            System.out.println("Transaction removed successfully!");
+        } catch (NullPointerException e) {
+            System.out.println("Transaction not found!");
+        }
+    }
 }

@@ -1,99 +1,150 @@
+import java.sql.Timestamp;
 import java.util.*;
 public class transactionStorage {
     //Create a storage for each transaction
-    static Map<String, Transaction> transactions = new HashMap<>();
+    static ArrayList<HashMap<String, String>> transactionStorage = new ArrayList<>();
+    //Create a list of items in transaction
+    static ArrayList<HashMap<String, ArrayList<String>>> itemsList = new ArrayList<HashMap<String, ArrayList<String>>>();
     //Total number of transactions
     static int transactionCount = 0;
+    //Total price temp handler
+    double totalPrice = 0;
+    //Storage for search results
+    static HashMap<String, String> searchResults = new HashMap<>();
 
     //Instantiate the class
     public transactionStorage() {
+        if (transactionStorage.isEmpty()) {
+            double totalPrice = 0;
+            //Add items
+            HashMap<String, ArrayList<String>> itemsInstance = new HashMap<>();
+            ArrayList<String> itemsIDs = new ArrayList<>();
+            itemsIDs.add("1");
+            ArrayList<String> itemQuantity = new ArrayList<>();
+            itemQuantity.add("1");
+            ArrayList<String> itemsTotal = new ArrayList<>();
+            //Get the product price from productStorage and multiply it by the quantity
+            for (int i = 0; i < productStorage.productList.size(); i++) {
+                if (productStorage.productList.get(i).get("productID").equals("1")) {
+                    double x = Double.parseDouble(productStorage.productList.get(i).get("productPrice")) * Double.parseDouble(itemQuantity.get(i));
+                    totalPrice += x;
+                    itemsTotal.add(String.valueOf(x));
+                }
+            }
+            //Create sample transactions
+            HashMap<String, String> transactionInstance = new HashMap<>();
+            transactionInstance.put("ID", "1");
+            transactionInstance.put("Timestamp", String.valueOf(new Timestamp(System.currentTimeMillis())));
+            transactionInstance.put("Total", String.valueOf(totalPrice));
+            transactionInstance.put("itemsIndex", String.valueOf(transactionCount));
+            transactionStorage.add(transactionInstance);
+
+
+            itemsInstance.put("itemID", itemsIDs);
+            itemsInstance.put("itemQuantity", itemQuantity);
+            itemsInstance.put("itemTotal", itemsTotal);
+            itemsList.add(itemsInstance);
+            transactionCount++;
+        }
+    }
+
+    //Create a new items instance
+    public void addNewItems(ArrayList<String> productIDs, ArrayList<String> productQuantities) {
+        //Add items
+        HashMap<String, ArrayList<String>> itemsInstance = new HashMap<>();
+        ArrayList<String> itemsTotal = new ArrayList<>();
+        //Get the product price from productStorage and multiply it by the quantity
+        for (int j = 0; j < productIDs.size(); j++) {
+            for (int i = 0; i < productStorage.productList.size(); i++) {
+                if (productStorage.productList.get(i).get("productID").equals(productIDs.get(j))) {
+                    double x = Double.parseDouble(productStorage.productList.get(i).get("productPrice")) * Double.parseDouble(productQuantities.get(j));
+                    totalPrice += x;
+                    itemsTotal.add(String.valueOf(x));
+                }
+            }
+        }
+        itemsInstance.put("itemID", productIDs);
+        itemsInstance.put("itemQuantity", productQuantities);
+        itemsInstance.put("itemTotal", itemsTotal);
+        itemsList.add(itemsInstance);
+    }
+
+    //Create a new transaction
+    public void addNewTransaction() {
         //Create sample transactions
-        Transaction t1 = new Transaction();
-        t1.addItem(new Items("1", 1));
-        t1.addItem(new Items("2", 2));
-        transactions.put(t1.getTransactionID(), t1);
-    }
-
-    //Add a new transaction
-    void addTransaction(Transaction t) {
-        transactions.put(t.getTransactionID(), t);
+        HashMap<String, String> transactionInstance = new HashMap<>();
+        transactionInstance.put("ID", String.valueOf(transactionCount + 1));
+        transactionInstance.put("Timestamp", String.valueOf(new Timestamp(System.currentTimeMillis())));
+        transactionInstance.put("Total", String.valueOf(totalPrice));
+        transactionInstance.put("itemsIndex", String.valueOf(transactionCount));
+        transactionStorage.add(transactionInstance);
         transactionCount++;
+        totalPrice = 0;
     }
 
-    //Get the transaction details
-    Transaction getTransaction(String transactionID) {
-        return transactions.get(transactionID);
-    }
-
-    //Get the total number of transactions
-    int getTransactionCount() {
-        return transactionCount;
-    }
-
-    //Get all the transactions
-    Map<String, Transaction> getAllTransactions() {
-        return transactions;
-    }
-
-    //
-
-    //transactionDetails class to save the transaction details
-    static class Transaction {
-        String id;
-        long timestamp;
-        List<Items> items;
-
-        //Create a new transaction - on call, only set up the transaction ID and timestamp
-        public Transaction() {
-            this.id = UUID.randomUUID().toString();
-            this.timestamp = new Date().getTime();
-            items = new ArrayList<>();
-        }
-        public void addItem(Items x) {
-            items.add(x);
-        }
-        //Get the transaction ID
-        public String getTransactionID() {
-            return id;
-        }
-        //Get the timestamp
-        public long getTimestamp() {
-            return timestamp;
+    //Print all transactions
+    public void printALlTransactions() {
+        productStorage productHandler = new productStorage();
+        for (int i = 0; i < transactionStorage.size(); i++) {
+            System.out.println("Transaction ID: " + transactionStorage.get(i).get("ID"));
+            System.out.println("Timestamp: " + transactionStorage.get(i).get("Timestamp"));
+            System.out.println("Total: " + transactionStorage.get(i).get("Total"));
+            System.out.println("Items: ");
+            for (int j = 0; j < itemsList.get(i).get("itemID").size(); j++) {
+                System.out.println("Item ID: " + itemsList.get(i).get("itemID").get(j));
+                System.out.println("Item Name: " + productHandler.searchProduct(String.valueOf(itemsList.get(i).get("itemID").get(j))).getProductName());
+                System.out.println("Item Quantity: " + itemsList.get(i).get("itemQuantity").get(j));
+                System.out.println("Item Total: " + itemsList.get(i).get("itemTotal").get(j));
+            }
+            System.out.println();
         }
     }
 
-    //purchasedItems class to save the items in the transaction
-    static class Items {
-        //Instantiate productStorage - to get product prices
-        String productID;
-        int quantity;
-        double totalDue;
+    //Print the transaction details
+    public void printTransactionDetails() {
+        System.out.println("Transaction ID: " + transactionStorage.get(transactionCount-1).get("ID"));
+        System.out.println("Timestamp: " + transactionStorage.get(transactionCount-1).get("Timestamp"));
+        System.out.println("Total: " + transactionStorage.get(transactionCount-1).get("Total"));
+        System.out.println("Items: ");
+        for (int j = 0; j < itemsList.get(transactionCount-1).get("itemID").size(); j++) {
+            System.out.println("Item ID: " + itemsList.get(transactionCount-1).get("itemID").get(j));
+            System.out.println("Item Quantity: " + itemsList.get(transactionCount-1).get("itemQuantity").get(j));
+            System.out.println("Item Total: " + itemsList.get(transactionCount-1).get("itemTotal").get(j));
+        }
+        System.out.println();
+    }
 
-        //Create a new purchased item
-        public Items(String productID, int quantity) {
-            this.productID = productID;
-            this.quantity = quantity;
-            this.totalDue = new productStorage().searchProduct(productID).getProductPrice() * quantity;
-        }
+    //Remove the transaction
+    public void removeTransaction() {
+            itemsList.remove(searchResults.get("itemsIndex"));
+            transactionStorage.remove(searchResults);
+            transactionCount--;
+    }
 
-        //Get the product ID
-        public String getItemID() {
-            return productID;
-        }
-        //Get the quantity
-        public int getQuantity() {
-            return quantity;
-        }
-        //Get the total due
-        public double getTotalDue() {
-            return totalDue;
-        }
-        //Convert the purchased item to a string
-        @Override
-        public String toString() {
-            return "Product ID: " + productID + "\nQuantity: " + quantity + "\nTotal Due: " + totalDue;
-        }
+    //Remove the transaction
+    public void removeTransaction(String transactionID) {
+        for (HashMap<String, String> stringStringHashMap : transactionStorage) {
+            if (stringStringHashMap.get("ID").equals(transactionID)) {
+                itemsList.remove(stringStringHashMap.get("itemsIndex"));
+                boolean remove = transactionStorage.remove(stringStringHashMap);
 
+                transactionCount--;
+                return;
+            }
+        }
+        System.out.println("Transaction not found!");
+    }
+
+    //Search the transaction
+    public transactionStorage searchTransaction(String transactionID) {
+        for (HashMap<String, String> stringStringHashMap : transactionStorage) {
+            if (stringStringHashMap.get("ID").equals(transactionID)) {
+                searchResults = stringStringHashMap;
+                return this;
+            }
+        }
+        System.out.println("Transaction not found!");
+        return null;
     }
 
 }

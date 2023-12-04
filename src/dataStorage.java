@@ -24,17 +24,17 @@ public class dataStorage {
 
     //Convert the data to JSON
     public dataStorage toJson(ArrayList<HashMap<String, String>> data) {
-        String json = "[";
+        StringBuilder json = new StringBuilder("[");
         for (HashMap<String, String> x : data) {
-            json += "{";
+            json.append("{");
             for (String key : x.keySet()) {
-                json += "\"" + key + "\":\"" + x.get(key) + "\",";
+                json.append("\"").append(key).append("\":\"").append(x.get(key)).append("\",");
             }
-            json = json.substring(0, json.length() - 1);
-            json += "},";
+            json = new StringBuilder(json.substring(0, json.length() - 1));
+            json.append("},");
         }
-        json = json.substring(0, json.length() - 1);
-        json += "]";
+        json = new StringBuilder(json.substring(0, json.length() - 1));
+        json.append("]");
 
         return this;
     }
