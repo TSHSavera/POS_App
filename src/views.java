@@ -19,7 +19,7 @@ public class views {
     //Initialize a new account array
     String[] newAccount = new String[5];
 
-
+    public views()throws IOException{}
     views(String sessionID) throws IOException {
         //Retrieve account data
         Map<String, String> accountData = authOperations.retrieveCurrentUser(sessionID);
@@ -50,6 +50,8 @@ public class views {
             int option = Integer.parseInt(userInp.readLine());
             this.sessionID = sessionID;
             adminOps(option);
+
+
         }
         if (accountData.get("accountType").equalsIgnoreCase("C")) {
             System.out.println("Welcome Cashier " + accountData.get("username"));
@@ -155,6 +157,9 @@ public class views {
                 productHandler.getProductQuantity();
                 break;
             case 6:
+                productHandler.showProductQuantity();
+                break;
+            case 7:
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
