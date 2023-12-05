@@ -56,6 +56,9 @@ public class views {
 
                     if (option < 1 || option > 18) {
                         System.out.println("\nInvalid input range\n");
+                        System.out.println("\nPress Enter to continue...");
+                        System.in.read();
+                        clrscr();
                     }
                 } catch (NumberFormatException e){
                     System.out.println("\nPlease enter a valid option!\n");
@@ -160,6 +163,7 @@ public class views {
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
+                clrscr();
                 break;
             default:
                 System.out.println("Error: Invalid argument for 'option' was passed. - " + option);
@@ -192,6 +196,7 @@ public class views {
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
+                clrscr();
                 break;
             default:
                 System.out.println("Invalid option");
@@ -233,10 +238,14 @@ public class views {
 
         //Once all loops broke, perform signup
         authHandler.signup(sessionID, newAccount[0], newAccount[1], newAccount[2], newAccount[3], newAccount[4]);
+
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     //This function is called when the admin wants to view all accounts
-    void viewViewAccounts() {
+    void viewViewAccounts()throws IOException{
         //Retrieve all accounts
         ArrayList<HashMap<String, String>> allAccounts = authHandler.retrieveAllAccounts(sessionID);
 
@@ -258,6 +267,9 @@ public class views {
             }
             System.out.println();
         }
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
 
     }
 
@@ -292,6 +304,9 @@ public class views {
         } else {
             System.out.println("\nAccount deletion failed!\n");
         }
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     void viewChangeAccountDetails() throws IOException {
@@ -349,6 +364,9 @@ public class views {
 
         //Change the account credentials
         authHandler.changeCredentials(sessionID, allAccounts.get(accountNumber - 1).get("username"), key, newValue);
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     //Add new products
@@ -392,6 +410,9 @@ public class views {
             }
             else break;
         } while (true);
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     //Delete product
@@ -410,11 +431,17 @@ public class views {
         if (deleteProduct != null) {
             System.out.println("Product with ID of '" + deleteProduct + "' was deleted successfully!\n");
         }
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     //View the product list
-    void viewProductList() {
+    void viewProductList()throws IOException{
         productHandler.printAllProducts();
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     //Change product details
@@ -450,6 +477,9 @@ public class views {
         } while (productHandler.testProductValues(key, newValue));
         //Change the product details
         productHandler.searchProduct(productID).changeProductDetails(key, newValue);
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     //Search product
@@ -469,6 +499,9 @@ public class views {
             System.out.println("Product found!\n");
             productHandler.searchProduct(productID).printProductDetails();
         }
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     //Create new transaction
@@ -531,11 +564,17 @@ public class views {
             System.out.println("Transaction cancelled!\n");
             transactionHandler.removeTransaction(String.valueOf(transactionStorage.transactionStorage.size()));
         }
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     //View transactions
     void viewViewTransaction() throws IOException {
         transactionHandler.printALlTransactions();
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     //Remove transaction
@@ -556,6 +595,9 @@ public class views {
         } catch (NullPointerException e) {
             System.out.println("Transaction not found!\n");
         }
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     void viewSaveProduct() throws IOException {
@@ -565,7 +607,9 @@ public class views {
         //Converts Product list data to some format - then save
         dataHandler.storeToFile(fileName, productStorage.productList);
 
-        System.out.println();
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     void viewSaveAccount() throws IOException {
@@ -575,8 +619,9 @@ public class views {
         //Converts Account list data to json
         dataHandler.storeToFile(fileName, auth.listOfAccounts);
 
-        System.out.println();
-
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     void viewSaveTransaction() throws IOException {
@@ -588,7 +633,9 @@ public class views {
         //Save Items too
         dataHandler.storeToItemsFile("TransactionItems", transactionStorage.itemsList);
 
-        System.out.println();
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     void viewGetPrice()throws IOException{
@@ -609,6 +656,9 @@ public class views {
         } catch (NullPointerException e) {
             System.out.println("Product not found!\n");
         }
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
     void viewGetQuantity() throws IOException{
         String productID;
@@ -628,6 +678,9 @@ public class views {
         } catch (NumberFormatException e) {
             System.out.println("\nProduct not found!\n");
         }
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
 
     public static void clrscr(){
@@ -658,6 +711,8 @@ public class views {
         } catch (NumberFormatException e) {
             System.out.println("\nProduct not found!\n");
         }
+        System.out.println("\nPress Enter to continue...");
+        System.in.read();
+        clrscr();
     }
-
 }
