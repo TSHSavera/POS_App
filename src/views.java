@@ -62,6 +62,9 @@ public class views {
                     }
                 } catch (NumberFormatException e){
                     System.out.println("\nPlease enter a valid option!\n");
+                    System.out.println("\nPress Enter to continue...");
+                    System.in.read();
+                    clrscr();
                 }
             } while(option < 1 || option > 18);
             
@@ -88,9 +91,15 @@ public class views {
 
                     if (option1 < 1 || option1 > 7) {
                         System.out.println("\nInvalid input range. Please enter a valid option!\n");
+                        System.out.println("\nPress Enter to continue...");
+                        System.in.read();
+                        clrscr();
                     }
                 } catch(NumberFormatException e){
                     System.out.println("\nPlease enter a valid option!\n");
+                    System.out.println("\nPress Enter to continue...");
+                    System.in.read();
+                    clrscr();
                 }
             } while (option1 < 1 || option1 > 7);
 
@@ -267,10 +276,6 @@ public class views {
             }
             System.out.println();
         }
-        System.out.println("\nPress Enter to continue...");
-        System.in.read();
-        clrscr();
-
     }
 
     //This function is called when the admin wants to delete an account
@@ -294,6 +299,9 @@ public class views {
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input!");
+                System.out.println("\nPress Enter to continue...");
+                System.in.read();
+                clrscr();
             }
         }while(true);
 
@@ -326,6 +334,9 @@ public class views {
                 }
             }catch (NumberFormatException e){
                 System.out.println("\nInvalid input!\n");
+                System.out.println("\nPress Enter to continue...");
+                System.in.read();
+                clrscr();
             }
         } while (accountNumber > allAccounts.size());
 
@@ -343,6 +354,9 @@ public class views {
                 option1 = Integer.parseInt(userInp.readLine());
             } catch (NumberFormatException e) {
                 System.out.println("\nInvalid Input!\n");
+                System.out.println("\nPress Enter to continue...");
+                System.in.read();
+                clrscr();
             }
         }while(option < 1 || option > 5);
 
@@ -594,6 +608,9 @@ public class views {
             System.out.println("Transaction removed successfully!\n");
         } catch (NullPointerException e) {
             System.out.println("Transaction not found!\n");
+            System.out.println("\nPress Enter to continue...");
+            System.in.read();
+            clrscr();
         }
         System.out.println("\nPress Enter to continue...");
         System.in.read();
@@ -710,6 +727,9 @@ public class views {
             System.out.println("\nTotal sales of that certain product is: " + new DecimalFormat("#.##").format(Sales)+ "\n");
         } catch (NumberFormatException e) {
             System.out.println("\nProduct not found!\n");
+            System.out.println("\nPress Enter to continue...");
+            System.in.read();
+            clrscr();
         }
         System.out.println("\nPress Enter to continue...");
         System.in.read();
