@@ -25,8 +25,6 @@ public class Main {
         //Load the TransactionItems from the file
         dataStorage.overrideItemsData(dataHandler.readItemsFile("TransactionItems"));
 
-        //Clear the screen
-        views.clrscr();
         //Initialize Variable Handlers
         String inputUsername, inputPassword, option;
         String sessionID = null;
@@ -37,6 +35,8 @@ public class Main {
 
         //Perform Login
         do {
+            //Clear the screen
+            views.clrscr();
             System.out.println("\nWelcome to POS! What would you like to do next? ");
             do {
                 //Ask if the user wants to log in or exit the program

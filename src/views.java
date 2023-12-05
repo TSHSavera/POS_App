@@ -172,7 +172,6 @@ public class views {
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
-                clrscr();
                 break;
             default:
                 System.out.println("Error: Invalid argument for 'option' was passed. - " + option);
@@ -205,7 +204,6 @@ public class views {
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
-                clrscr();
                 break;
             default:
                 System.out.println("Invalid option");
