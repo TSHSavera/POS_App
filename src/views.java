@@ -366,8 +366,10 @@ public class views {
             productHandler.addProduct(productName, productPrice, productQuantity);
             System.out.println("Product added successfully!");
 
-            System.out.print("Do you want to add another product? y/n: ");
-            choice = userInp.readLine();
+            do {
+                System.out.print("Do you want to add another product? y/n: ");
+                choice = userInp.readLine();
+            } while (!choice.equalsIgnoreCase("y") && !choice.equalsIgnoreCase("n"));
 
         } while (choice.equalsIgnoreCase("y"));
     }
@@ -392,7 +394,6 @@ public class views {
 
     //View the product list
     void viewProductList() {
-        System.out.println(productStorage.productList);
         productHandler.printAllProducts();
     }
 
@@ -467,13 +468,13 @@ public class views {
                 //Check if the input is numeric
                 if (productHandler.testProductValues("productID", productID)) {
                     System.out.println("Product ID only accepts numeric characters!");
-                } else {
-                    //Check if the product exists
-                    if (productHandler.searchProduct(productID) == null) {
-                        System.out.println("Product not found!");
-                    }
                 }
-            } while (productHandler.testProductValues("productID", productID) && productHandler.searchProduct(productID) != null);
+                //Check if the product exists
+                if (productHandler.searchProduct(productID) == null) {
+                    System.out.println("Product not found!");
+                }
+
+            } while (productHandler.searchProduct(productID) == null);
 
             do {
                 System.out.print("Enter product quantity: ");
@@ -586,7 +587,16 @@ public class views {
         }
     }
 
-    void clearScreen() throws IOException, InterruptedException {
-        new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+    public static void clrscr(){
+        //Clears Screen in java
+        try {
+            if (System.getProperty("os.name").contains("Windows"))
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            else
+                Runtime.getRuntime().exec("clear");
+        } catch (IOException | InterruptedException ignored) {}
+    }
+    public views() throws IOException {
+
     }
 }

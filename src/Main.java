@@ -25,7 +25,8 @@ public class Main {
         //Load the TransactionItems from the file
         dataStorage.overrideItemsData(dataHandler.readItemsFile("TransactionItems"));
 
-
+        //Clear the screen
+        views.clrscr();
         //Initialize Variable Handlers
         String inputUsername, inputPassword, option;
         String sessionID = null;
@@ -40,19 +41,29 @@ public class Main {
             do {
                 //Ask if the user wants to log in or exit the program
                 System.out.println("1. Login on Console");
-                System.out.println("2. Exit");
+                System.out.println("2. Login on GUI");
+                System.out.println("3. Exit");
                 System.out.print("Enter option: ");
                 option = userInp.readLine();
-                if (option.equals("2")) {
-                    System.out.println("Program exits.");
-                    System.exit(0);
-                }
-                if (!option.equals("1") && !option.equals("2")) {
-                    System.out.println("\nInvalid input! Please choose between 1 or 2 only!\n");
+                switch (option) {
+                    case "1":
+                        break;
+                    case "2":
+                        System.out.println("Press enter to terminate the program.");
+                        System.in.read();
+                        System.exit(0);
+                        break;
+                    case "3":
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("Invalid option!");
+                        break;
                 }
             } while (!option.equals("1") && !option.equals("2"));
 
-
+            //Clear the screen
+            views.clrscr();
             //Ask for username and password
             System.out.println("\nWelcome to POS! Please enter your account credentials.");
             System.out.print("Username: ");

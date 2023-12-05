@@ -38,7 +38,7 @@ public class transactionStorage {
             }
             //Create sample transactions
             HashMap<String, String> transactionInstance = new HashMap<>();
-            transactionInstance.put("ID", "1");
+            transactionInstance.put("ID", String.valueOf((int) (Math.random() * 999999)));
             transactionInstance.put("Timestamp", String.valueOf(new Timestamp(System.currentTimeMillis())));
             transactionInstance.put("Total", String.valueOf(totalPrice));
             transactionInstance.put("itemsIndex", String.valueOf(transactionStorage.size()));

@@ -20,7 +20,6 @@ public class productStorage {
             productInstance.put("productPrice", "100");
             productInstance.put("productQuantity", "100");
             productInstance.put("productTotalSales", "0");
-            productInstance.put("productTotalProfit", "0");
             productList.add(productInstance);
         }
     }
@@ -46,37 +45,26 @@ public class productStorage {
         //Create a new product
         HashMap<String, String> newProduct = new HashMap<>();
         //Add the product details
-        newProduct.put("productID", String.valueOf(productList.size() + 1));
+        //Loop through the product list
+        newProduct.put("productID", String.valueOf((int) (Math.random() * 999999)));
         newProduct.put("productName", productName);
         newProduct.put("productPrice", productPrice);
         newProduct.put("productQuantity", productQuantity);
         newProduct.put("productTotalSales", "0");
-        newProduct.put("productTotalProfit", "0");
         //Add the product to the list
         productList.add(newProduct);
     }
 
     public productStorage searchProduct(String productID) {
-        //Perform binary search for the product
-        int first = 0;
-        int last = productList.size() - 1;
-        int mid = (first + last) / 2;
-
         //Remove the brackets from the productID - if it has any
         String trimmedPID = productID.replaceAll("\\[", "");
-        trimmedPID = trimmedPID.replaceAll("\\]", "");
-
-
-        while (last >= first) {
-            if (Objects.equals(trimmedPID, productList.get(mid).get("productID"))) {
-                searchInstance = productList.get(mid);
+        trimmedPID = trimmedPID.replaceAll("]", "");
+        //Perform Linear Search
+        for (HashMap<String, String> stringStringHashMap : productList) {
+            if (Objects.equals(stringStringHashMap.get("productID"), trimmedPID)) {
+                searchInstance = stringStringHashMap;
                 return this;
-            } else if (Integer.parseInt(trimmedPID) > Integer.parseInt(productList.get(mid).get("productID"))) {
-                first = mid + 1;
-            } else {
-                last = mid - 1;
             }
-            mid = (first + last) / 2;
         }
         return null;
     }
@@ -123,7 +111,7 @@ public class productStorage {
         //Print the header
         System.out.println("Product ID\tProduct Name\tProduct Price\tProduct Quantity\tProduct Total Sales\tProduct Total Profit");
         //Print the product details
-        System.out.println(searchInstance.get("productID") + "\t" + searchInstance.get("productName") + "\t" + searchInstance.get("productPrice") + "\t" + searchInstance.get("productQuantity") + "\t" + searchInstance.get("productTotalSales") + "\t" + searchInstance.get("productTotalProfit"));
+        System.out.println(searchInstance.get("productID") + "\t" + searchInstance.get("productName") + "\t" + searchInstance.get("productPrice") + "\t" + searchInstance.get("productQuantity") + "\t" + searchInstance.get("productTotalSales"));
     }
 
     //Delete a product
@@ -155,7 +143,7 @@ public class productStorage {
         System.out.println("Product ID\tProduct Name\tProduct Price\tProduct Quantity\tProduct Total Sales\tProduct Total Profit");
         //Print all products
         for (HashMap<String, String> stringStringHashMap : productList) {
-            System.out.println(stringStringHashMap.get("productID") + "\t" + stringStringHashMap.get("productName") + "\t" + stringStringHashMap.get("productPrice") + "\t" + stringStringHashMap.get("productQuantity") + "\t" + stringStringHashMap.get("productTotalSales") + "\t" + stringStringHashMap.get("productTotalProfit"));
+            System.out.println(stringStringHashMap.get("productID") + "\t" + stringStringHashMap.get("productName") + "\t" + stringStringHashMap.get("productPrice") + "\t" + stringStringHashMap.get("productQuantity") + "\t" + stringStringHashMap.get("productTotalSales"));
         }
     }
     public void showProductQuantity() {
