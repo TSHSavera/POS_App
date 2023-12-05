@@ -246,8 +246,8 @@ class authOperations extends auth {
             //Call addNewAccount
             int addNewAccount = addNewAccount(un, pass, fn, ln, at);
             if (addNewAccount == 0) {
-                System.out.println("Total Registered Accounts: " + listOfAccounts.size());
-                System.out.println("Account created!");
+                System.out.println("\nTotal Registered Accounts: " + listOfAccounts.size());
+                System.out.println("Account created!\n");
                 //callBackMethod.apply(addNewAccount);
             } else {
                 System.out.println("Error: Account not created!");

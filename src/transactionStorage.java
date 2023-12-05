@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.*;
 public class transactionStorage {
     //Create a storage for each transaction
@@ -95,13 +96,13 @@ public class transactionStorage {
         for (int i = 0; i < transactionStorage.size(); i++) {
             System.out.println("Transaction ID: " + transactionStorage.get(i).get("ID"));
             System.out.println("Timestamp: " + transactionStorage.get(i).get("Timestamp"));
-            System.out.println("Total: " + transactionStorage.get(i).get("Total"));
+            System.out.println("Total: " + new DecimalFormat("#.##").format(Double.parseDouble(transactionStorage.get(i).get("Total"))));
             System.out.println("Items: ");
             for (int j = 0; j < itemsList.get(i).get("itemID").size(); j++) {
                 System.out.println("Item ID: " + itemsList.get(i).get("itemID").get(j));
                 System.out.println("Item Name: " + productHandler.searchProduct(String.valueOf(itemsList.get(i).get("itemID").get(j))).getProductName());
                 System.out.println("Item Quantity: " + itemsList.get(i).get("itemQuantity").get(j));
-                System.out.println("Item Total: " + itemsList.get(i).get("itemTotal").get(j));
+                System.out.println("Item Total: " + new DecimalFormat("#.##").format(Double.parseDouble(itemsList.get(i).get("itemTotal").get(j))));
             }
             System.out.println();
         }
@@ -111,13 +112,14 @@ public class transactionStorage {
     public void printTransactionDetails() {
         System.out.println("Transaction ID: " + transactionStorage.get(transactionStorage.size()-1).get("ID"));
         System.out.println("Timestamp: " + transactionStorage.get(transactionStorage.size()-1).get("Timestamp"));
-        System.out.println("Total: " + transactionStorage.get(transactionStorage.size()-1).get("Total"));
+        System.out.println("Total: " +new DecimalFormat("#.##").format(Double.parseDouble(transactionStorage.get(transactionStorage.size()-1).get("Total"))));
         System.out.println("Items: ");
         for (int j = 0; j < itemsList.get(transactionStorage.size()-1).get("itemID").size(); j++) {
             System.out.println("Item ID: " + itemsList.get(transactionStorage.size()-1).get("itemID").get(j));
             System.out.println("Item Quantity: " + itemsList.get(transactionStorage.size()-1).get("itemQuantity").get(j));
-            System.out.println("Item Total: " + itemsList.get(transactionStorage.size()-1).get("itemTotal").get(j));
+            System.out.println("Item Total: " + new DecimalFormat("#.##").format(Double.parseDouble(itemsList.get(transactionStorage.size()-1).get("itemTotal").get(j))));
         }
+
         System.out.println();
     }
 

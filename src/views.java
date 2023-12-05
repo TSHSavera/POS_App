@@ -39,15 +39,16 @@ public class views {
                 System.out.println("7. View product list");
                 System.out.println("8. Change product details");
                 System.out.println("9. Search product");
-                System.out.println("10. Get the product price");
-                System.out.println("11. Create new transaction");
-                System.out.println("12. View transactions");
-                System.out.println("13. Remove transaction");
-                System.out.println("14. Save Product File");
-                System.out.println("15. Save Account File");
-                System.out.println("16. Save Transaction File");
-                System.out.println("17. Show the quantity of all products");
-                System.out.println("18. Logout");
+                System.out.println("10. View product sales");
+                System.out.println("11. Get the product price");
+                System.out.println("12. Show the stocks of all products");
+                System.out.println("13. Create new transaction");
+                System.out.println("14. View transactions");
+                System.out.println("15. Remove transaction");
+                System.out.println("16. Save Product File");
+                System.out.println("17. Save Account File");
+                System.out.println("18. Save Transaction File");
+                System.out.println("19. Logout");
 
                 try {
                     System.out.print("Enter option: ");
@@ -129,30 +130,33 @@ public class views {
                 viewSearchProduct();
                 break;
             case 10:
-                viewGetPrice();
+                viewGetProductSales();
                 break;
             case 11:
-                viewCreateNewTransaction();
+                viewGetPrice();
                 break;
             case 12:
-                viewViewTransaction();
+                viewGetQuantity();
                 break;
             case 13:
-                viewRemoveTransaction();
+                viewCreateNewTransaction();
                 break;
             case 14:
-                viewSaveProduct();
+                viewViewTransaction();
                 break;
             case 15:
-                viewSaveAccount();
+                viewRemoveTransaction();
                 break;
             case 16:
-                viewSaveTransaction();
+                viewSaveProduct();
                 break;
             case 17:
-                productHandler.showProductQuantity();
+                viewSaveAccount();
                 break;
             case 18:
+                viewSaveTransaction();
+                break;
+            case 19:
                 System.out.println("Logout");
                 authOperations.logout();
                 status = false;
@@ -179,7 +183,7 @@ public class views {
                 viewGetPrice();
                 break;
             case 5:
-                productHandler.getProductQuantity();
+                viewGetQuantity();
                 break;
             case 6:
                 productHandler.showProductQuantity();
@@ -201,7 +205,7 @@ public class views {
         //Ask for values then test instantly
         //Ask for new account details
         //Loop until the signup is successful
-        System.out.println("Enter new account details");
+        System.out.println("\nEnter new account details");
         //Ask for username
         do {
             System.out.print("Username: ");
@@ -237,7 +241,7 @@ public class views {
         ArrayList<HashMap<String, String>> allAccounts = authHandler.retrieveAllAccounts(sessionID);
 
         //Print all accounts
-        System.out.println("Total Registered Accounts: " + allAccounts.size());
+        System.out.println("\nTotal Registered Accounts: " + allAccounts.size());
         for (int i = 0; i < allAccounts.size(); i++) {
             System.out.println("Account " + (i + 1) + ":");
             System.out.println("Username: " + allAccounts.get(i).get("username"));
@@ -259,20 +263,34 @@ public class views {
 
     //This function is called when the admin wants to delete an account
     void viewDeleteAccount() throws IOException {
+        int accountNumber;
         //Retrieve all accounts
         viewViewAccounts();
         //Store all accounts
         ArrayList<HashMap<String, String>> allAccounts = authHandler.retrieveAllAccounts(sessionID);
-
         //Ask for the account to delete
-        System.out.print("Enter the account number to delete: ");
-        int accountNumber = Integer.parseInt(userInp.readLine());
+        do {
+            try {
+                System.out.print("\nEnter the account number to delete: ");
+                accountNumber = Integer.parseInt(userInp.readLine());
+
+                if(accountNumber <= allAccounts.size() && accountNumber > 0){
+                    break;
+                }
+                else {
+                    System.out.println("Invalid input!");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input!");
+            }
+        }while(true);
+
         //Delete the account
         String deleteAccount = authHandler.deleteAccount(sessionID, allAccounts.get(accountNumber - 1).get("username"));
         if (deleteAccount != null) {
-            System.out.println("Account with username of '" + deleteAccount + "' was deleted successfully!");
+            System.out.println("\nAccount with username of '" + deleteAccount + "' was deleted successfully!\n");
         } else {
-            System.out.println("Account deletion failed!");
+            System.out.println("\nAccount deletion failed!\n");
         }
     }
 
@@ -285,14 +303,14 @@ public class views {
         //Ask for the account to change
         do {
             try {
-                System.out.print("Enter the account number to change: ");
+                System.out.print("\nEnter the account number to change: ");
                 accountNumber = Integer.parseInt(userInp.readLine());
 
                 if (accountNumber > allAccounts.size()) {
                     System.out.println("Out of bounds! Please enter a valid account number.");
                 }
             }catch (NumberFormatException e){
-                System.out.println("Invalid input!");
+                System.out.println("\nInvalid input!\n");
             }
         } while (accountNumber > allAccounts.size());
 
@@ -307,9 +325,9 @@ public class views {
                 System.out.println("4. Last Name");
                 System.out.println("5. Account Type");
                 System.out.print("Enter option: ");
-                int option = Integer.parseInt(userInp.readLine());
+                option1 = Integer.parseInt(userInp.readLine());
             } catch (NumberFormatException e) {
-                System.out.println("Invalid Input!");
+                System.out.println("\nInvalid Input!\n");
             }
         }while(option < 1 || option > 5);
 
@@ -339,7 +357,7 @@ public class views {
         //Ask for Products
         do {
             do {
-                System.out.print("Enter product name: ");
+                System.out.print("\nEnter product name: ");
                 productName = userInp.readLine();
                 //Check if the input is alphanumeric
                 if (productHandler.testProductValues("productName", productName))
@@ -364,31 +382,33 @@ public class views {
             } while (productHandler.testProductValues("productQuantity", productQuantity));
 
             productHandler.addProduct(productName, productPrice, productQuantity);
-            System.out.println("Product added successfully!");
+            System.out.println("Product added successfully!\n");
 
-            do {
-                System.out.print("Do you want to add another product? y/n: ");
-                choice = userInp.readLine();
-            } while (!choice.equalsIgnoreCase("y") && !choice.equalsIgnoreCase("n"));
+            System.out.print("Do you want to add another product? y/n: ");
+            choice = userInp.readLine();
 
-        } while (choice.equalsIgnoreCase("y"));
+            if(!choice.equalsIgnoreCase("y") && !choice.equalsIgnoreCase("n")){
+                System.out.println("Invalid input!");
+            }
+            else break;
+        } while (true);
     }
 
     //Delete product
     void viewDeleteProduct() throws IOException {
         //Ask for the product ID
-        System.out.print("Enter the product ID to delete: ");
+        System.out.print("\nEnter the product ID to delete: ");
         String productID = userInp.readLine();
         //Delete the product
         String deleteProduct;
         try {
             deleteProduct = productHandler.searchProduct(productID).deleteProduct();
         } catch (NullPointerException e) {
-            System.out.println("Product not found!");
+            System.out.println("Product not found!\n");
             return;
         }
         if (deleteProduct != null) {
-            System.out.println("Product with ID of '" + deleteProduct + "' was deleted successfully!");
+            System.out.println("Product with ID of '" + deleteProduct + "' was deleted successfully!\n");
         }
     }
 
@@ -400,16 +420,16 @@ public class views {
     //Change product details
     void viewChangeProductDetails() throws IOException {
         //Ask for the product ID
-        System.out.print("Enter the product ID to change: ");
+        System.out.print("\nEnter the product ID to change: ");
         String productID = userInp.readLine();
         try {
             productHandler.searchProduct(productID).getProductName();
         } catch (NullPointerException e) {
-            System.out.println("Product not found!");
+            System.out.println("Product not found!\n");
             return;
         }
         //Ask what to change
-        System.out.println("What do you want to change?");
+        System.out.println("\nWhat do you want to change?");
         System.out.println("1. Product Name");
         System.out.println("2. Product Price");
         System.out.println("3. Product Quantity");
@@ -425,7 +445,7 @@ public class views {
         //Ask for the new value
         String newValue;
         do {
-            System.out.print("Enter the new value: ");
+            System.out.print("\nEnter the new value: ");
             newValue = userInp.readLine();
         } while (productHandler.testProductValues(key, newValue));
         //Change the product details
@@ -435,18 +455,18 @@ public class views {
     //Search product
     void viewSearchProduct() throws IOException {
         //Ask for the product ID
-        System.out.print("Enter the product ID to search: ");
+        System.out.print("\nEnter the product ID to search: ");
         String productID = userInp.readLine();
         String searchProduct;
         //Search the product
         try {
             searchProduct = productHandler.searchProduct(productID).getProductName();
         } catch (NullPointerException e) {
-            System.out.println("Product not found!");
+            System.out.println("Product not found!\n");
             return;
         }
         if (searchProduct != null) {
-            System.out.println("Product found!");
+            System.out.println("Product found!\n");
             productHandler.searchProduct(productID).printProductDetails();
         }
     }
@@ -463,7 +483,7 @@ public class views {
         //Ask for Products
         do {
             do {
-                System.out.print("Enter product ID: ");
+                System.out.print("\nEnter product ID: ");
                 productID = userInp.readLine();
                 //Check if the input is numeric
                 if (productHandler.testProductValues("productID", productID)) {
@@ -471,7 +491,7 @@ public class views {
                 }
                 //Check if the product exists
                 if (productHandler.searchProduct(productID) == null) {
-                    System.out.println("Product not found!");
+                    System.out.println("Product not found!\n");
                 }
 
             } while (productHandler.searchProduct(productID) == null);
@@ -481,14 +501,18 @@ public class views {
                 productQuantity = userInp.readLine();
                 //Check if the input is numeric
                 if (productHandler.testProductValues("productQuantity", productQuantity))
-                    System.out.println("Product quantity only accepts numeric characters!");
-            } while (productHandler.testProductValues("productQuantity", productQuantity));
+                    System.out.println("Product quantity only accepts numeric characters!\n");
+                if (productHandler.searchProduct(productID).getProductQuantity() < Integer.parseInt(productQuantity)){
+                    System.out.println("Insufficient Stock!");
+                }
+                else break;
+            } while (true);
 
 
             productIDs.add(productID);
             productQuantities.add(productQuantity);
 
-            System.out.print("Do you want to add another product? y/n: ");
+            System.out.print("\nDo you want to add another product? y/n: ");
             choice = userInp.readLine();
 
         } while (choice.equalsIgnoreCase("y"));
@@ -502,9 +526,9 @@ public class views {
         System.out.print("Would you like to save this transaction? y/n: ");
         choice = userInp.readLine();
         if (choice.equalsIgnoreCase("y")) {
-            System.out.println("Transaction created successfully!");
+            System.out.println("Transaction created successfully!\n");
         } else {
-            System.out.println("Transaction cancelled!");
+            System.out.println("Transaction cancelled!\n");
             transactionHandler.removeTransaction(String.valueOf(transactionStorage.transactionStorage.size()));
         }
     }
@@ -519,18 +543,18 @@ public class views {
         //Ask for the transaction ID - loop until the transaction is found
         String transactionID;
         do {
-            System.out.print("Enter the transaction ID to remove: ");
+            System.out.print("\nEnter the transaction ID to remove: ");
             transactionID = userInp.readLine();
             if (transactionHandler.searchTransaction(transactionID) == null) {
-                System.out.println("Transaction not found!");
+                System.out.println("Transaction not found!\n");
             }
         } while (transactionHandler.searchTransaction(transactionID) == null);
         //Remove the transaction
         try {
             transactionHandler.removeTransaction(transactionID);
-            System.out.println("Transaction removed successfully!");
+            System.out.println("Transaction removed successfully!\n");
         } catch (NullPointerException e) {
-            System.out.println("Transaction not found!");
+            System.out.println("Transaction not found!\n");
         }
     }
 
@@ -571,7 +595,7 @@ public class views {
         String productID;
 
         do {
-            System.out.print("Enter product ID: ");
+            System.out.print("\nEnter product ID: ");
             productID = userInp.readLine();
             //Check if the input is numeric
             if (productHandler.testProductValues("productID", productID))
@@ -581,9 +605,28 @@ public class views {
         double pPrice;
         try {
             pPrice = (productHandler.searchProduct(productID).getProductPrice());
-            System.out.println("\nPrice of an item: "+new DecimalFormat("#.##").format(pPrice)+"\n");
+            System.out.println("\nPrice of an item: " + new DecimalFormat("#.##").format(pPrice)+"\n");
         } catch (NullPointerException e) {
-            System.out.println("Product not found!");
+            System.out.println("Product not found!\n");
+        }
+    }
+    void viewGetQuantity() throws IOException{
+        String productID;
+
+        do {
+            System.out.print("\nEnter product ID: ");
+            productID = userInp.readLine();
+            //Check if the input is numeric
+            if (productHandler.testProductValues("productID", productID))
+                System.out.println("Product ID only accepts numeric characters!");
+        } while (productHandler.testProductValues("productID", productID));
+
+        int Quantity;
+        try {
+            Quantity = productHandler.searchProduct(productID).getProductQuantity();
+            System.out.println("\nItem Quantity is: " + Quantity + "\n");
+        } catch (NumberFormatException e) {
+            System.out.println("\nProduct not found!\n");
         }
     }
 
@@ -596,7 +639,25 @@ public class views {
                 Runtime.getRuntime().exec("clear");
         } catch (IOException | InterruptedException ignored) {}
     }
-    public views() throws IOException {
 
+    void viewGetProductSales()throws IOException{
+        String productID;
+
+        do {
+            System.out.print("\nEnter product ID: ");
+            productID = userInp.readLine();
+            //Check if the input is numeric
+            if (productHandler.testProductValues("productID", productID))
+                System.out.println("Product ID only accepts numeric characters!");
+        } while (productHandler.testProductValues("productID", productID));
+
+        double Sales;
+        try {
+            Sales = productHandler.searchProduct(productID).getProductTotalSales();
+            System.out.println("\nTotal sales of that certain product is: " + new DecimalFormat("#.##").format(Sales)+ "\n");
+        } catch (NumberFormatException e) {
+            System.out.println("\nProduct not found!\n");
+        }
     }
+
 }
