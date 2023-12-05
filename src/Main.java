@@ -41,26 +41,19 @@ public class Main {
             do {
                 //Ask if the user wants to log in or exit the program
                 System.out.println("1. Login on Console");
-                System.out.println("2. Login on GUI");
-                System.out.println("3. Exit");
+                System.out.println("2. Exit");
                 System.out.print("Enter option: ");
                 option = userInp.readLine();
                 switch (option) {
                     case "1":
                         break;
                     case "2":
-                        System.out.println("Press enter to terminate the program.");
-                        System.in.read();
                         System.exit(0);
-                        break;
-                    case "3":
-                        System.exit(0);
-                        break;
                     default:
                         System.out.println("Invalid option!");
                         break;
                 }
-            } while (!option.equals("1") && !option.equals("2"));
+            } while (!option.equals("1"));
 
             //Clear the screen
             views.clrscr();
