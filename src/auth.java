@@ -29,22 +29,23 @@
 
 //package src;
 
+import java.io.IOException;
 import java.util.*;
 
 public class auth {
+
     //Create a storage for each account credential
-    static Map<String, String> account = new HashMap<>();
+    static HashMap<String, String> account = new HashMap<>();
 
     //Create a list of accounts
-    protected static List<Map<String, String>> listOfAccounts = new ArrayList<>();
+    protected static ArrayList<HashMap<String, String>> listOfAccounts = new ArrayList<>();
 
-    //Total number of accounts
-    static int totalAccounts = 0;
 
     //Instantiate the class
     public auth() {
         //If the admin is not yet initialized, initialize it
-        if (listOfAccounts.isEmpty()) {
+        if (listOfAccounts == null || listOfAccounts.isEmpty()) {
+            listOfAccounts = new ArrayList<>();
             //Initialize the admin accounts
             account.put("username", "admin");
             account.put("password", "admin");
@@ -52,7 +53,6 @@ public class auth {
             account.put("lastName", "Milante");
             account.put("accountType", "A");
             listOfAccounts.add(account);
-            totalAccounts++;
 
             account = new HashMap<>();
             account.put("username", "cashier");
@@ -61,7 +61,6 @@ public class auth {
             account.put("lastName", "Dela Cruz");
             account.put("accountType", "C");
             listOfAccounts.add(account);
-            totalAccounts++;
         }
     }
 
@@ -69,7 +68,7 @@ public class auth {
     public boolean testValues(String type, String value) {
         if (value == null) {
             System.out.println("Error: Null values are not allowed!");
-            return true;
+            return false;
         }
         switch (type) {
             case "username":
@@ -126,7 +125,6 @@ public class auth {
         account.put("lastName", lastName);
         account.put("accountType", accountType);
         listOfAccounts.add(account);
-        totalAccounts++;
         return 0;
     }
 
@@ -139,11 +137,10 @@ public class auth {
         }
         //Safety check 2: The logged-in user must be an admin
         if (Objects.requireNonNull(authOperations.retrieveCurrentUser(sid)).get("accountType").equalsIgnoreCase("A")) {
-            for (int i = 0; i < totalAccounts; i++) {
+            for (int i = 0; i < listOfAccounts.size(); i++) {
                 //If found, delete the account
                 if (listOfAccounts.get(i).get("username").equals(username)) {
                     listOfAccounts.remove(i);
-                    totalAccounts--;
                     return username;
                 }
             }
@@ -165,19 +162,19 @@ public class auth {
         //Start lookup if the sessionID is null - means that it is used for login not for retrieving data -
         // we'll not allow anyone to retrieve data without logging in, especially if they're not admin
         if (authOperations.sessionID == null) {
-            for (int i = 0; i < totalAccounts; i++) {
+            for (HashMap<String, String> listOfAccount : listOfAccounts) {
                 //If found, return the account
-                if (listOfAccounts.get(i).get("username").equals(username)) {
-                    return listOfAccounts.get(i);
+                if (listOfAccount.get("username").equals(username)) {
+                    return listOfAccount;
                 }
             }
         } else {
             //If the sessionID is not null - check if the user is an admin - then allow them to retrieve data
             if (authOperations.account.get("accountType").equalsIgnoreCase("A")) {
-                for (int i = 0; i < totalAccounts; i++) {
+                for (HashMap<String, String> listOfAccount : listOfAccounts) {
                     //If found, return the account
-                    if (listOfAccounts.get(i).get("username").equals(username)) {
-                        return listOfAccounts.get(i);
+                    if (listOfAccount.get("username").equals(username)) {
+                        return listOfAccount;
                     }
                 }
             }
@@ -189,10 +186,14 @@ public class auth {
 
 class authOperations extends auth {
     //Handlers
-    private int loginAttempts = 0;
+    private int loginAttempts;
     protected static String sessionID;
     //Store the logged-in user's account
     static Map<String, String> account = new HashMap<>();
+
+    public authOperations() throws IOException {
+        super();
+    }
 
     //Call current logged-in user - get data
     static Map<String, String> retrieveCurrentUser(String sid) {
@@ -200,13 +201,12 @@ class authOperations extends auth {
             return account;
         }
         System.out.println("Error: Session ID doesn't match!");
-        //TODO: Logout the user
         logout();
         return null;
     }
 
     //Auth retrieveCurrentUser all accounts for admin
-    List<Map<String, String>> retrieveAllAccounts(String sid) {
+    ArrayList<HashMap<String, String>> retrieveAllAccounts(String sid) {
         //Perform checks - if the user is logged in and is an admin
         if (Objects.requireNonNull(retrieveCurrentUser(sid)).get("accountType").equalsIgnoreCase("A")) {
             return listOfAccounts;
@@ -246,8 +246,8 @@ class authOperations extends auth {
             //Call addNewAccount
             int addNewAccount = addNewAccount(un, pass, fn, ln, at);
             if (addNewAccount == 0) {
-                System.out.println("Total Registered Accounts: " + totalAccounts);
-                System.out.println("Account created!");
+                System.out.println("\nTotal Registered Accounts: " + listOfAccounts.size());
+                System.out.println("Account created!\n");
                 //callBackMethod.apply(addNewAccount);
             } else {
                 System.out.println("Error: Account not created!");
@@ -279,9 +279,9 @@ class authOperations extends auth {
     boolean sessionCheck(String sid) {
         //Check if null
         if (sid == null) {
-            return false;
+            return true;
         }
-        return sid.equals(sessionID);
+        return !sid.equals(sessionID);
     }
 
     //Logout
@@ -302,9 +302,9 @@ class authOperations extends auth {
                         //Check if the username exists
                         if (accountLookup(value) == null) {
                             //Change the username
-                            for (int i = 0; i < totalAccounts; i++) {
-                                if (listOfAccounts.get(i).get("username").equals(account.get("username"))) {
-                                    listOfAccounts.get(i).put("username", value);
+                            for (HashMap<String, String> listOfAccount : listOfAccounts) {
+                                if (listOfAccount.get("username").equals(un)) {
+                                    listOfAccount.put("username", value);
                                     System.out.println("Username changed successfully!");
                                     break;
                                 }
@@ -314,9 +314,9 @@ class authOperations extends auth {
                         }
                     } else {
                         //Change the value
-                        for (int i = 0; i < totalAccounts; i++) {
-                            if (listOfAccounts.get(i).get("username").equals(un)) {
-                                listOfAccounts.get(i).put(key, value);
+                        for (HashMap<String, String> listOfAccount : listOfAccounts) {
+                            if (listOfAccount.get("username").equals(un)) {
+                                listOfAccount.put(key, value);
                                 System.out.println("Value changed successfully!");
                                 break;
                             }

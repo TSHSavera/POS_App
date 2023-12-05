@@ -1,8 +1,5 @@
 ### IntelliJ IDEA ###
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
-
+/out/artifacts/
 ### Eclipse ###
 .apt_generated
 .classpath
@@ -30,3 +27,4 @@ bin/
 .idea/discord.xml
 *.xml
 .idea/uiDesigner.xml
+
