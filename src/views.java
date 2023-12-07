@@ -349,7 +349,7 @@ public class views {
                 System.out.println("4. Last Name");
                 System.out.println("5. Account Type");
                 System.out.print("Enter option: ");
-                option1 = Integer.parseInt(userInp.readLine());
+//                option = Integer.parseInt(userInp.readLine());
             } catch (NumberFormatException e) {
                 System.out.println("\nInvalid Input!\n");
                 System.out.println("\nPress Enter to continue...");
